@@ -1,0 +1,22 @@
+name: hello_doc
+description: A new Flutter project.
+
+version: 0.0.0+0
+environment:
+  sdk: ">=2.9.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ^3.0.10
+  material_design_icons_flutter: ^4.0.5555
+  back_button_interceptor: ^4.3.0
+  uuid: ^2.2.2
+  equatable: ^1.2.4
+
+dev_dependencies:
+  gate: 
+    path: ./packages/gate/
+
+flutter:
+  uses-material-design: true
