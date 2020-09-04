@@ -19,7 +19,7 @@ class GetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
   GetSchedule(this.userId);
 
   @override
-  String get url => '/api/v1/users/$userId/schedule/';
+  String get url => '/api/v1/users/${userId.netwokId}/schedule/';
 
   @override
   Map<String, dynamic> get data => {};
@@ -34,9 +34,10 @@ class GetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
   List<entities.DayTimeInterval> onAnswer(dio.Response answer) {
     List<entities.DayTimeInterval> res = [];
     if (data == null) return res;
-    Map<String, int> intervalsMap = answer.data as Map<String, int>;
+    Map intervalsMap = answer.data;
 
     for (String key in intervalsMap.keys) {
+      if (!_weekdayMap.keys.contains(key)) continue;
       BitArray interval = BitArray(value: intervalsMap[key]);
       int startInterval;
       for (int i = 0; i < 48; i++) {
@@ -44,7 +45,7 @@ class GetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
           startInterval = i;
         }
         if (!interval[i] && startInterval != null) {
-          var startDuration = Duration(minutes: 30 * startInterval + 1);
+          var startDuration = Duration(minutes: 30 * startInterval);
           var endDuration = Duration(minutes: 30 * i);
           var newInterval = entities.DayTimeInterval(
               _weekdayMap[key], startDuration, endDuration);

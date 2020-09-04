@@ -23,7 +23,8 @@ class LoadSchedule extends ActionBase {
         error = Error("unknown");
         return;
       }
-      onComplete(this);
     }
+    onComplete(this);
+    return;
   }
 }

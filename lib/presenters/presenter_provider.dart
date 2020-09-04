@@ -10,7 +10,7 @@ class PresenterProvider<T extends PresenterBase> extends StatefulWidget {
     Key key,
     @required this.child,
     @required this.presenter,
-  }) : super(key: key) {}
+  }) : super(key: key);
 
   @override
   _ProviderState<T> createState() => _ProviderState<T>();
@@ -41,7 +41,7 @@ class _ProviderState<T> extends State<PresenterProvider<PresenterBase>>
 
   @override
   void initState() {
-    widget.presenter?.doInitiate(context);
+    widget.presenter?.doInitiate();
     super.initState();
   }
 

@@ -13,10 +13,22 @@ dependencies:
   back_button_interceptor: ^4.3.0
   uuid: ^2.2.2
   equatable: ^1.2.4
+  google_fonts: ^1.1.0
 
 dev_dependencies:
   gate: 
     path: ./packages/gate/
 
 flutter:
-  uses-material-design: true
+ uses-material-design: true
+ fonts:
+    - family: Ubuntu
+      fonts:
+      - asset: assets/fonts/Ubuntu-Bold.ttf
+        weight: 700
+      - asset: assets/fonts/Ubuntu-Medium.ttf
+        weight: 500
+      - asset: assets/fonts/Ubuntu-Regular.ttf
+        weight: 400
+      - asset: assets/fonts/Ubuntu-Light.ttf
+        weight: 300

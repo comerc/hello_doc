@@ -2,7 +2,7 @@ class BitArray {
   int _value;
   BitArray({int value = 0})
       : _value = value,
-        assert(_value != null);
+        assert(value != null);
 
   bool operator [](int index) {
     if (index >= 64) throw Exception("Wrong index...");

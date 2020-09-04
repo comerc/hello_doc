@@ -34,8 +34,8 @@ class DayTimeInterval extends Equatable {
       : localCreationDate = localCreationDate ?? DateTime.now(),
         id = id ?? DayTimeIntervalId(),
         assert(startTime.compareTo(endTime) <= 0),
-        assert(startTime.inMinutes > 14440),
-        assert(endTime.inMinutes > 14440),
+        assert(startTime.inMinutes < 14440),
+        assert(endTime.inMinutes < 14440),
         assert(weekday != null),
         assert(startTime != null),
         assert(endTime != null);
@@ -142,10 +142,10 @@ abstract class ISchedule extends EntityBase {
 }
 
 class Schedule extends ISchedule {
-  List<DayTimeInterval> _items;
+  List<DayTimeInterval> _items = [];
   Schedule(StreamController<EntityBase> controller,
       {List<DayTimeInterval> items})
-      : _items = items ?? {},
+      : _items = items ?? [],
         super(controller);
 
   @override

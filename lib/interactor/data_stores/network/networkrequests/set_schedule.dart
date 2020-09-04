@@ -21,7 +21,7 @@ class SetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
       : schedule = List<entities.DayTimeInterval>.unmodifiable(schedule);
 
   @override
-  String get url => '/api/v1/users/$userId/schedule/';
+  String get url => '/api/v1/users/${userId.netwokId}/schedule/';
 
   @override
   Map<String, dynamic> get data {
