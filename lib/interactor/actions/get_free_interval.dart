@@ -11,6 +11,7 @@ class GetFreeInterval extends ActionBase {
         assert(weekday <= 7);
 
   bool isReallyFreeInterval(pack_entities.ISchedule entitieSchedule) {
+    if (freeDayTimeInterval == null) return false;
     var items = entitieSchedule.itemsbyWeekday(weekday);
     for (var interval in items) {
       if (interval.isIntersectionWith(freeDayTimeInterval)) return false;
@@ -25,27 +26,30 @@ class GetFreeInterval extends ActionBase {
       var items = entitieSchedule.itemsbyWeekday(weekday);
       if (items.isEmpty) {
         freeDayTimeInterval = pack_entities.DayTimeInterval(
-            weekday, Duration.zero, Duration(hours: 24));
+            weekday, Duration(hours: 8), Duration(hours: 20));
         onComplete(this);
         return;
-      }
-      for (var interval in items) {
-        if (interval.freeLeft != null && interval.freeRight != null) {
-          freeDayTimeInterval = interval.freeLeft;
-          if (isReallyFreeInterval(entitieSchedule)) {
-            onComplete(this);
-            return;
-          } else {
-            freeDayTimeInterval = interval.freeRight;
-            if (isReallyFreeInterval(entitieSchedule)) {
-              onComplete(this);
-              return;
-            }
+      } else {
+        Duration start = Duration.zero;
+        Duration end = Duration.zero;
+        List<pack_entities.DayTimeInterval> intervals =
+            List<pack_entities.DayTimeInterval>.from(items);
+        intervals.sort((a, b) => a.startTime.compareTo(b.startTime));
+
+        for (int i = 0; i <= intervals.length; i++) {
+          if (i > 0)
+            start = intervals[i - 1].endTime + Duration(minutes: 30);
+          else
+            start = Duration.zero;
+          if (i < intervals.length)
+            end = intervals[i].startTime - Duration(minutes: 30);
+          else
+            end = Duration(minutes: 1440);
+          if ((end - start) >= Duration(minutes: 30)) {
+            freeDayTimeInterval =
+                pack_entities.DayTimeInterval(weekday, start, end);
+            break;
           }
-        } else if (interval.freeLeft != null) {
-          freeDayTimeInterval = interval.freeLeft;
-        } else if (interval.freeRight != null) {
-          freeDayTimeInterval = interval.freeRight;
         }
         if (isReallyFreeInterval(entitieSchedule)) {
           onComplete(this);
@@ -61,7 +65,8 @@ class GetFreeInterval extends ActionBase {
         error = Error("unknown");
         return;
       }
-      onComplete(this);
     }
+    onComplete(this);
+    return;
   }
 }

@@ -54,8 +54,6 @@ class DaySchedule extends StatefulWidget {
 }
 
 class _DayScheduleState extends State<DaySchedule> {
-  // Map<DayTimeIntervalId, RangeValues> _ranges = {};
-
   @override
   void didUpdateWidget(covariant DaySchedule oldWidget) {
     bool needSetState = false;
@@ -84,10 +82,6 @@ class _DayScheduleState extends State<DaySchedule> {
 
   @override
   void initState() {
-    // for (var interval in widget.intervals) {
-    //   _ranges[interval.id] =
-    //       RangeValues(interval.start.toValue, interval.end.toValue);
-    // }
     super.initState();
   }
 
@@ -197,15 +191,12 @@ class _DayScheduleState extends State<DaySchedule> {
     return Padding(
       padding: const EdgeInsets.only(top: 30),
       child: RangeSlider(
+        divisions: 48,
         values: RangeValues(interval.start.toValue, interval.end.toValue),
         onChanged: (RangeValues rangeValues) {
           widget.onIntervalChanged(durationFromValue(rangeValues.start),
               durationFromValue(rangeValues.end), widget.weekday, interval.id);
         },
-        // onChangeEnd: (RangeValues rangeValues) {
-        //   widget.onIntervalChanged(durationFromValue(rangeValues.start),
-        //       durationFromValue(rangeValues.end), widget.weekday, interval.id);
-        // },
       ),
     );
   }

@@ -64,7 +64,10 @@ class Schedule extends ViewBase {
                                                     presenter
                                                         .deactivateDay(weekday);
                                                 },
-                                                onIntervalAdded: (weekday) {},
+                                                onIntervalAdded: (weekday) {
+                                                  presenter.addScheduleInterval(
+                                                      weekday);
+                                                },
                                                 onIntervalChanged: (start, end,
                                                     weekday, intervalId) {
                                                   presenter.changeInterval(
