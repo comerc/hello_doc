@@ -6,7 +6,6 @@ class Error {
   final int status;
   final String title;
   final String detail;
-  final String cause;
   final String code;
   final Map data;
 
@@ -15,7 +14,6 @@ class Error {
     this.status,
     this.title,
     this.detail,
-    this.cause,
     this.data,
   });
 }

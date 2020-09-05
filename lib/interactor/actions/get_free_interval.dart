@@ -66,6 +66,10 @@ class GetFreeInterval extends ActionBase {
         return;
       }
     }
+    if (freeDayTimeInterval == null) {
+      error = Error("no_free_intervals",
+          detail: "Все временные интервалы уже заняты");
+    }
     onComplete(this);
     return;
   }

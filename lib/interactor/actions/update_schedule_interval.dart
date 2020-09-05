@@ -10,6 +10,10 @@ class UpdateSchedulenterval extends ActionBase {
       : assert(intervalId != null);
   @override
   void doAction(IAccessor accessor, void onComplete(ActionBase result)) async {
+    if (endTime - startTime < Duration(minutes: 30)) {
+      onComplete(this);
+      return;
+    }
     var entitieSchedule = accessor.entitieSchedule;
     try {
       var oldInterval = entitieSchedule.items

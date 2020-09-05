@@ -4,7 +4,7 @@ import 'networkrequest.dart';
 import '../../../entities/index.dart' as entities;
 import '../../../../utilities/bit_array.dart';
 
-class SetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
+class SetSchedule extends NetworkRequest {
   final entities.UserId userId;
   final List<entities.DayTimeInterval> schedule;
   static const Map<String, int> _weekdayMap = {
@@ -56,30 +56,7 @@ class SetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
   TypeRequest get typeRequest => TypeRequest.patch_request;
 
   @override
-  List<entities.DayTimeInterval> onAnswer(dio.Response answer) {
-    List<entities.DayTimeInterval> res = [];
-    // if (data == null) return res;
-    // Map<String, int> intervalsMap = answer.data as Map<String, int>;
-
-    // for (String key in intervalsMap.keys) {
-    //   BitArray interval = BitArray(value: intervalsMap[key]);
-    //   int startInterval;
-    //   for (int i = 0; i < 48; i++) {
-    //     if (interval[i] && startInterval == null) {
-    //       startInterval = i;
-    //     }
-    //     if (!interval[i] && startInterval != null) {
-    //       var startDuration = Duration(minutes: 30 * startInterval + 1);
-    //       var endDuration = Duration(minutes: 30 * i);
-    //       var newInterval = entities.DayTimeInterval(
-    //           _weekdayMap[key], startDuration, endDuration);
-    //       startInterval = null;
-    //       res.add(newInterval);
-    //     }
-    //   }
-    // }
-    return res;
-  }
+  void onAnswer(dio.Response answer) {}
 
   @override
   bool get authorized => true;

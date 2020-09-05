@@ -24,10 +24,8 @@ class DayItem {
   final String name;
   final bool active;
   final int number;
-  final bool addIntervalAvailable;
   final List<IntervalItem> intervals;
-  DayItem(this.name, this.active, this.intervals, this.number,
-      this.addIntervalAvailable);
+  DayItem(this.name, this.active, this.intervals, this.number);
 }
 
 class ScheduleNotifier extends NotificationBase {
@@ -55,7 +53,7 @@ class ScheduleNotifier extends NotificationBase {
     for (int i = 1; i <= 7; i++) {
       var intervals = schedule.itemsbyWeekday(i);
       if (intervals.isEmpty) {
-        newModel.add(DayItem(weekdayNames[i], false, [], i, true));
+        newModel.add(DayItem(weekdayNames[i], false, [], i));
       } else {
         List<IntervalItem> intervalItems = List<IntervalItem>.from(
             intervals.map<IntervalItem>((e) => IntervalItem(e.startTime,
@@ -63,7 +61,7 @@ class ScheduleNotifier extends NotificationBase {
         intervalItems.sort((a, b) {
           return a.localCreationDate.compareTo(b.localCreationDate);
         });
-        newModel.add(DayItem(weekdayNames[i], true, intervalItems, i, true));
+        newModel.add(DayItem(weekdayNames[i], true, intervalItems, i));
       }
     }
     newModel.sort((a, b) {

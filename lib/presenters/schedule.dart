@@ -7,7 +7,8 @@ import '../interactor/entities/index.dart' as entities;
 
 class Schedule extends PresenterBase {
   Schedule();
-  var loading = ValueNotifier<bool>(true);
+  final loading = ValueNotifier<bool>(true);
+  final busy = ValueNotifier<bool>(false);
 
   Stream<List<notifications.DayItem>> get scheduleModelStream {
     _scheduleNotifierStream ??= subscribeTo(notifications.ScheduleNotifier());
@@ -18,17 +19,21 @@ class Schedule extends PresenterBase {
       GlobalKey<NavigatorState>();
 
   Future<actions.Error> addScheduleInterval(int weekday) async {
+    busy.value = true;
     var resultGetFreeInterval = await execute(actions.GetFreeInterval(weekday));
     if (resultGetFreeInterval.error != null) {
+      busy.value = false;
       return resultGetFreeInterval.error;
     }
     if (resultGetFreeInterval.freeDayTimeInterval != null) {
       var resultAddSchedulenterval = await execute(actions.AddSchedulenterval(
           resultGetFreeInterval.freeDayTimeInterval));
       if (resultAddSchedulenterval.error != null) {
+        busy.value = false;
         return resultGetFreeInterval.error;
       }
     }
+    busy.value = false;
     return null;
   }
 
@@ -37,22 +42,34 @@ class Schedule extends PresenterBase {
   }
 
   Future<actions.Error> deactivateDay(int weekday) async {
+    busy.value = true;
     var result = await execute(actions.ClearDay(weekday));
+    if (result.error != null) {
+      busy.value = false;
+      return result.error;
+    }
+    busy.value = false;
+    return null;
+  }
+
+  Future<actions.Error> changeInterval(int weekday, Duration startTime,
+      Duration endTime, entities.DayTimeIntervalId intervalId) async {
+    var result = await execute(actions.UpdateSchedulenterval(intervalId,
+        startTime: startTime, endTime: endTime));
     if (result.error != null) {
       return result.error;
     }
     return null;
   }
 
-  Future<actions.Error> changeInterval(int weekday, Duration startTime,
-      Duration endTime, entities.DayTimeIntervalId intervalId) async {
-    var result = execute(actions.UpdateSchedulenterval(intervalId,
-        startTime: startTime, endTime: endTime));
-    return null;
-  }
-
   Future<actions.Error> save() async {
-    var result = execute(actions.SaveSchedule(entities.UserId(342)));
+    busy.value = true;
+    var result = await execute(actions.SaveSchedule(entities.UserId(342)));
+    if (result.error != null) {
+      busy.value = false;
+      return result.error;
+    }
+    busy.value = false;
     return null;
   }
 

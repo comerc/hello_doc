@@ -13,7 +13,14 @@ class SaveSchedule extends ActionBase {
     var entitieSchedule = accessor.entitieSchedule;
     try {
       var schedule = entitieSchedule.items;
-
+      if (schedule.firstWhere((element) => element.isInersected,
+              orElse: () => null) !=
+          null) {
+        error = Error("have_intersections",
+            detail: "В текущем расписании есть пересекающиеся интервалы.");
+        onComplete(this);
+        return;
+      }
       await dataStoreNetwork.sendRequest<List<pack_entities.DayTimeInterval>>(
           pack_network.SetSchedule(userId, schedule));
     } catch (e) {
@@ -23,7 +30,8 @@ class SaveSchedule extends ActionBase {
         error = Error("unknown");
         return;
       }
-      onComplete(this);
     }
+    onComplete(this);
+    return;
   }
 }
