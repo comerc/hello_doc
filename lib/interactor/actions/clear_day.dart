@@ -2,15 +2,19 @@ import 'action_base.dart';
 import '../accessor.dart';
 import '../entities/index.dart' as pack_entities;
 
-class RemoveSchedulenterval extends ActionBase {
-  pack_entities.DayTimeIntervalId intervalId;
-  RemoveSchedulenterval(this.intervalId) : assert(intervalId != null);
+class ClearDay extends ActionBase {
+  final int weekday;
+  ClearDay(this.weekday) : assert(weekday != null);
   @override
   void doAction(IAccessor accessor, void onComplete(ActionBase result)) async {
     var entitieSchedule = accessor.entitieSchedule;
     try {
-      entitieSchedule.removeItem(entitieSchedule.items
-          .firstWhere((element) => element.id == intervalId));
+      List<pack_entities.DayTimeInterval> intervals =
+          List<pack_entities.DayTimeInterval>.from(
+              entitieSchedule.itemsbyWeekday(weekday));
+      for (var interval in intervals) {
+        entitieSchedule.removeItem(interval);
+      }
     } catch (e) {
       if (e is pack_entities.ScheduleException) {
         error = Error(e.type.toString(), detail: e.description);

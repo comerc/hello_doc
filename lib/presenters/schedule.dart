@@ -33,10 +33,14 @@ class Schedule extends PresenterBase {
   }
 
   Future<actions.Error> activateDay(int weekday) async {
-    return null;
+    return addScheduleInterval(weekday);
   }
 
   Future<actions.Error> deactivateDay(int weekday) async {
+    var result = await execute(actions.ClearDay(weekday));
+    if (result.error != null) {
+      return result.error;
+    }
     return null;
   }
 

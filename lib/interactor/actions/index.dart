@@ -6,3 +6,4 @@ export 'load_schedule.dart';
 export 'remove_schedule_interval.dart';
 export 'save_schedule.dart';
 export 'update_schedule_interval.dart';
+export 'clear_day.dart';

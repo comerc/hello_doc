@@ -54,8 +54,16 @@ class Schedule extends ViewBase {
                                                 name: dayItem.name,
                                                 intervals: dayItem.intervals,
                                                 active: dayItem.active,
+                                                weekday: dayItem.number,
                                                 onActiveChanged:
-                                                    (value, weekday) {},
+                                                    (value, weekday) {
+                                                  if (value)
+                                                    presenter
+                                                        .activateDay(weekday);
+                                                  else
+                                                    presenter
+                                                        .deactivateDay(weekday);
+                                                },
                                                 onIntervalAdded: (weekday) {},
                                                 onIntervalChanged: (start, end,
                                                     weekday, intervalId) {
