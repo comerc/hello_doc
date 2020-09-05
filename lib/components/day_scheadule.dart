@@ -54,14 +54,40 @@ class DaySchedule extends StatefulWidget {
 }
 
 class _DayScheduleState extends State<DaySchedule> {
-  Map<DayTimeIntervalId, RangeValues> _ranges = {};
+  // Map<DayTimeIntervalId, RangeValues> _ranges = {};
+
+  @override
+  void didUpdateWidget(covariant DaySchedule oldWidget) {
+    bool needSetState = false;
+    if (widget.name != oldWidget.name) {
+      needSetState = true;
+    }
+    if (widget.active != oldWidget.active) {
+      needSetState = true;
+    }
+    if (widget.weekday != oldWidget.weekday) {
+      needSetState = true;
+    }
+    if (widget.intervals.length != oldWidget.intervals.length) {
+      needSetState = true;
+    } else {
+      for (int i = 0; i < widget.intervals.length; i++) {
+        if (widget.intervals[i] != oldWidget.intervals[i]) {
+          needSetState = true;
+          break;
+        }
+      }
+    }
+    if (needSetState) setState(() {});
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   void initState() {
-    for (var interval in widget.intervals) {
-      _ranges[interval.id] =
-          RangeValues(interval.start.toValue, interval.end.toValue);
-    }
+    // for (var interval in widget.intervals) {
+    //   _ranges[interval.id] =
+    //       RangeValues(interval.start.toValue, interval.end.toValue);
+    // }
     super.initState();
   }
 
@@ -173,14 +199,13 @@ class _DayScheduleState extends State<DaySchedule> {
       child: RangeSlider(
         values: RangeValues(interval.start.toValue, interval.end.toValue),
         onChanged: (RangeValues rangeValues) {
-          setState(() {
-            _ranges[interval.id] = rangeValues;
-          });
-        },
-        onChangeEnd: (RangeValues rangeValues) {
           widget.onIntervalChanged(durationFromValue(rangeValues.start),
               durationFromValue(rangeValues.end), widget.weekday, interval.id);
         },
+        // onChangeEnd: (RangeValues rangeValues) {
+        //   widget.onIntervalChanged(durationFromValue(rangeValues.start),
+        //       durationFromValue(rangeValues.end), widget.weekday, interval.id);
+        // },
       ),
     );
   }

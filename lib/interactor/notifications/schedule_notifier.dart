@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 import 'notification_base.dart';
@@ -5,12 +6,17 @@ import '../entities/index.dart';
 import '../accessor.dart';
 
 @immutable
-class IntervalItem {
+class IntervalItem extends Equatable {
   final Duration start;
   final Duration end;
   final DateTime localCreationDate;
   final DayTimeIntervalId id;
-  IntervalItem(this.start, this.end, this.localCreationDate, this.id);
+  final bool isIntersected;
+  IntervalItem(this.start, this.end, this.localCreationDate, this.id,
+      this.isIntersected);
+
+  @override
+  List<Object> get props => [start, end, localCreationDate, id, isIntersected];
 }
 
 @immutable
@@ -52,8 +58,8 @@ class ScheduleNotifier extends NotificationBase {
         newModel.add(DayItem(weekdayNames[i], false, [], i, true));
       } else {
         List<IntervalItem> intervalItems = List<IntervalItem>.from(
-            intervals.map<IntervalItem>((e) => IntervalItem(
-                e.startTime, e.endTime, e.localCreationDate, e.id)));
+            intervals.map<IntervalItem>((e) => IntervalItem(e.startTime,
+                e.endTime, e.localCreationDate, e.id, e.isInersected)));
         intervalItems.sort((a, b) {
           return a.localCreationDate.compareTo(b.localCreationDate);
         });

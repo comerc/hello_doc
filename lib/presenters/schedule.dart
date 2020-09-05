@@ -14,6 +14,9 @@ class Schedule extends PresenterBase {
     return _scheduleNotifierStream.map((event) => event.model);
   }
 
+  final GlobalKey<NavigatorState> mainNavigationKey =
+      GlobalKey<NavigatorState>();
+
   Future<actions.Error> addScheduleInterval(int weekday) async {
     var resultGetFreeInterval = await execute(actions.GetFreeInterval(weekday));
     if (resultGetFreeInterval.error != null) {
@@ -37,19 +40,14 @@ class Schedule extends PresenterBase {
     return null;
   }
 
-  Future<actions.Error> changeLeftInterval(
-      int weekday, Duration newValue) async {
+  Future<actions.Error> changeInterval(int weekday, Duration startTime,
+      Duration endTime, entities.DayTimeIntervalId intervalId) async {
+    var result = execute(actions.UpdateSchedulenterval(intervalId,
+        startTime: startTime, endTime: endTime));
     return null;
   }
 
-  Future<actions.Error> changeRightInterval(
-      int weekday, Duration newValue) async {
-    return null;
-  }
-
-  Future<actions.Error> save() async {
-    return null;
-  }
+  Future<actions.Error> save() async {}
 
   @override
   void initiate() async {

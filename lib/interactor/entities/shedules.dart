@@ -28,11 +28,13 @@ class DayTimeInterval extends Equatable {
   final int weekday;
   final DateTime localCreationDate;
   final DayTimeIntervalId id;
+  final bool isInersected;
 
   DayTimeInterval(this.weekday, this.startTime, this.endTime,
-      [DateTime localCreationDate, DayTimeIntervalId id])
+      [DateTime localCreationDate, DayTimeIntervalId id, bool isIntersected])
       : localCreationDate = localCreationDate ?? DateTime.now(),
         id = id ?? DayTimeIntervalId(),
+        isInersected = isIntersected ?? false,
         assert(startTime.compareTo(endTime) <= 0),
         assert(startTime.inMinutes < 14440),
         assert(endTime.inMinutes < 14440),
@@ -40,9 +42,15 @@ class DayTimeInterval extends Equatable {
         assert(startTime != null),
         assert(endTime != null);
 
-  DayTimeInterval copyWith({Duration startTime, Duration endTime}) {
-    return DayTimeInterval(this.weekday, startTime ?? this.startTime,
-        endTime ?? this.endTime, this.localCreationDate, this.id);
+  DayTimeInterval copyWith(
+      {Duration startTime, Duration endTime, bool isInersected}) {
+    return DayTimeInterval(
+        this.weekday,
+        startTime ?? this.startTime,
+        endTime ?? this.endTime,
+        this.localCreationDate,
+        this.id,
+        isInersected ?? this.isInersected);
   }
 
   DayTimeInterval get freeLeft {
@@ -193,14 +201,17 @@ class Schedule extends ISchedule {
   void updateItem(DayTimeInterval newInterval) {
     var itemIndex =
         _items.indexWhere((element) => element.id == newInterval.id);
+
     if (itemIndex < 0) {
       throw ScheduleException(SheduleExceptionType.not_contains);
     }
-    for (var currentInterval in itemsbyWeekday(newInterval.weekday)) {
-      if (currentInterval.isIntersectionWith(newInterval)) {
-        throw ScheduleException(SheduleExceptionType.intersect);
-      }
-    }
+    // for (var currentInterval in itemsbyWeekday(newInterval.weekday)) {
+    //   if (currentInterval.id == newInterval.id) continue;
+    //   if (currentInterval.isIntersectionWith(newInterval)) {
+    //     if()
+    //     throw ScheduleException(SheduleExceptionType.intersect);
+    //   }
+    // }
     _items[itemIndex] = newInterval;
     changed();
   }

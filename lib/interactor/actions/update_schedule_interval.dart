@@ -14,8 +14,21 @@ class UpdateSchedulenterval extends ActionBase {
     try {
       var oldInterval = entitieSchedule.items
           .firstWhere((element) => element.id == intervalId);
-      entitieSchedule.updateItem(
-          oldInterval.copyWith(startTime: startTime, endTime: endTime));
+      var newInterval =
+          oldInterval.copyWith(startTime: startTime, endTime: endTime);
+      entitieSchedule.updateItem(newInterval);
+
+      for (var currentInterval
+          in entitieSchedule.itemsbyWeekday(newInterval.weekday)) {
+        for (var testInterval
+            in entitieSchedule.itemsbyWeekday(newInterval.weekday)) {
+          if (currentInterval.id == testInterval.id) continue;
+          var intersectedInterval = currentInterval.copyWith(
+              isInersected: currentInterval.isIntersectionWith(testInterval));
+
+          entitieSchedule.updateItem(intersectedInterval);
+        }
+      }
     } catch (e) {
       if (e is pack_entities.ScheduleException) {
         error = Error(e.type.toString(), detail: e.description);

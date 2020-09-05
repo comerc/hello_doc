@@ -49,6 +49,8 @@ class Schedule extends ViewBase {
                                             snapshot.data
                                                 .map<Widget>((dayItem) {
                                               return components.DaySchedule(
+                                                key: Key(
+                                                    "DaySchedule_${dayItem.name}"),
                                                 name: dayItem.name,
                                                 intervals: dayItem.intervals,
                                                 active: dayItem.active,
@@ -56,7 +58,13 @@ class Schedule extends ViewBase {
                                                     (value, weekday) {},
                                                 onIntervalAdded: (weekday) {},
                                                 onIntervalChanged: (start, end,
-                                                    weekday, intervalId) {},
+                                                    weekday, intervalId) {
+                                                  presenter.changeInterval(
+                                                      weekday,
+                                                      start,
+                                                      end,
+                                                      intervalId);
+                                                },
                                               );
                                             }),
                                           ),
