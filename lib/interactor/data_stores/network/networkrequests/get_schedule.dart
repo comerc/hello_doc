@@ -44,9 +44,11 @@ class GetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
         if (interval[i] && startInterval == null) {
           startInterval = i;
         }
-        if (!interval[i] && startInterval != null) {
+        if ((!interval[i] || (i == 47)) && (startInterval != null)) {
           var startDuration = Duration(minutes: 30 * startInterval);
-          var endDuration = Duration(minutes: 30 * i);
+          var endDuration = i == 47
+              ? Duration(minutes: 30 * (i + 1))
+              : Duration(minutes: 30 * i);
           var newInterval = entities.DayTimeInterval(
               _weekdayMap[key], startDuration, endDuration);
           startInterval = null;

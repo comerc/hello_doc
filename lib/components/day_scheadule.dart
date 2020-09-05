@@ -101,6 +101,7 @@ class _DayScheduleState extends State<DaySchedule> {
           children: [
             Text(widget.name),
             Switch(
+                activeColor: Color(0xFF5775FF),
                 value: widget.active,
                 onChanged: (value) =>
                     widget.onActiveChanged(value, widget.weekday))
@@ -191,6 +192,7 @@ class _DayScheduleState extends State<DaySchedule> {
     return Padding(
       padding: const EdgeInsets.only(top: 30),
       child: RangeSlider(
+        activeColor: Color(0xFF5775FF),
         divisions: 48,
         values: RangeValues(interval.start.toValue, interval.end.toValue),
         onChanged: (RangeValues rangeValues) {

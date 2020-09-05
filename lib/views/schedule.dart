@@ -18,6 +18,19 @@ class Schedule extends ViewBase {
         appBar: PreferredSize(
             child: SafeArea(child: Container()), preferredSize: Size(0, 30)),
         backgroundColor: Color(0xFFF2F5F8),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: RaisedButton(
+          color: Color(0xFF5775FF),
+          // shape: ShapeBorder(),
+          onPressed: () {
+            presenter.save();
+          },
+          child: Text(
+            "Готово",
+            style: TextStyle(
+                fontFamily: "Ubuntu", fontSize: 15, color: Colors.white),
+          ),
+        ),
         body: Container(
           decoration: BoxDecoration(
               color: Colors.white,
@@ -45,40 +58,8 @@ class Schedule extends ViewBase {
                               return SliverList(
                                   delegate: snapshot.hasData
                                       ? SliverChildListDelegate(
-                                          List<Widget>.from(
-                                            snapshot.data
-                                                .map<Widget>((dayItem) {
-                                              return components.DaySchedule(
-                                                key: Key(
-                                                    "DaySchedule_${dayItem.name}"),
-                                                name: dayItem.name,
-                                                intervals: dayItem.intervals,
-                                                active: dayItem.active,
-                                                weekday: dayItem.number,
-                                                onActiveChanged:
-                                                    (value, weekday) {
-                                                  if (value)
-                                                    presenter
-                                                        .activateDay(weekday);
-                                                  else
-                                                    presenter
-                                                        .deactivateDay(weekday);
-                                                },
-                                                onIntervalAdded: (weekday) {
-                                                  presenter.addScheduleInterval(
-                                                      weekday);
-                                                },
-                                                onIntervalChanged: (start, end,
-                                                    weekday, intervalId) {
-                                                  presenter.changeInterval(
-                                                      weekday,
-                                                      start,
-                                                      end,
-                                                      intervalId);
-                                                },
-                                              );
-                                            }),
-                                          ),
+                                          buildSheduleList(
+                                              snapshot, presenter, context),
                                         )
                                       : SliverChildListDelegate([]));
                             }),
@@ -89,5 +70,38 @@ class Schedule extends ViewBase {
         ),
       ),
     );
+  }
+
+  List<Widget> buildSheduleList(
+      AsyncSnapshot<List<notifications.DayItem>> snapshot,
+      presenters.Schedule presenter,
+      BuildContext context) {
+    var res = List<Widget>.from(
+      snapshot.data.map<Widget>((dayItem) {
+        return components.DaySchedule(
+          key: Key("DaySchedule_${dayItem.name}"),
+          name: dayItem.name,
+          intervals: dayItem.intervals,
+          active: dayItem.active,
+          weekday: dayItem.number,
+          onActiveChanged: (value, weekday) {
+            if (value)
+              presenter.activateDay(weekday);
+            else
+              presenter.deactivateDay(weekday);
+          },
+          onIntervalAdded: (weekday) {
+            presenter.addScheduleInterval(weekday);
+          },
+          onIntervalChanged: (start, end, weekday, intervalId) {
+            presenter.changeInterval(weekday, start, end, intervalId);
+          },
+        );
+      }),
+    );
+    res.add(Container(
+      height: MediaQuery.of(context).padding.bottom + 100,
+    ));
+    return res;
   }
 }

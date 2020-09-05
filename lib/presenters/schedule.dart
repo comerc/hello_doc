@@ -51,7 +51,10 @@ class Schedule extends PresenterBase {
     return null;
   }
 
-  Future<actions.Error> save() async {}
+  Future<actions.Error> save() async {
+    var result = execute(actions.SaveSchedule(entities.UserId(342)));
+    return null;
+  }
 
   @override
   void initiate() async {

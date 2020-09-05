@@ -33,15 +33,14 @@ class SetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
       BitArray array = BitArray();
       var weekdayShedule =
           schedule.where((element) => element.weekday == weekday);
-      if (weekdayShedule.isEmpty) continue;
 
       for (var interval in weekdayShedule) {
         int startIndex = (interval.startTime.inMinutes / 30).round();
-        int endIndex = (interval.startTime.inMinutes / 30).round();
+        int endIndex = (interval.endTime.inMinutes / 30).round();
 
         if (startIndex > 48) throw Exception("startIndex > 48");
         if (endIndex > 48) throw Exception("endIndex > 48");
-        for (int i = startIndex; i <= endIndex; i++) {
+        for (int i = startIndex; i < endIndex; i++) {
           array[i] = true;
         }
       }
@@ -59,26 +58,26 @@ class SetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
   @override
   List<entities.DayTimeInterval> onAnswer(dio.Response answer) {
     List<entities.DayTimeInterval> res = [];
-    if (data == null) return res;
-    Map<String, int> intervalsMap = answer.data as Map<String, int>;
+    // if (data == null) return res;
+    // Map<String, int> intervalsMap = answer.data as Map<String, int>;
 
-    for (String key in intervalsMap.keys) {
-      BitArray interval = BitArray(value: intervalsMap[key]);
-      int startInterval;
-      for (int i = 0; i < 48; i++) {
-        if (interval[i] && startInterval == null) {
-          startInterval = i;
-        }
-        if (!interval[i] && startInterval != null) {
-          var startDuration = Duration(minutes: 30 * startInterval + 1);
-          var endDuration = Duration(minutes: 30 * i);
-          var newInterval = entities.DayTimeInterval(
-              _weekdayMap[key], startDuration, endDuration);
-          startInterval = null;
-          res.add(newInterval);
-        }
-      }
-    }
+    // for (String key in intervalsMap.keys) {
+    //   BitArray interval = BitArray(value: intervalsMap[key]);
+    //   int startInterval;
+    //   for (int i = 0; i < 48; i++) {
+    //     if (interval[i] && startInterval == null) {
+    //       startInterval = i;
+    //     }
+    //     if (!interval[i] && startInterval != null) {
+    //       var startDuration = Duration(minutes: 30 * startInterval + 1);
+    //       var endDuration = Duration(minutes: 30 * i);
+    //       var newInterval = entities.DayTimeInterval(
+    //           _weekdayMap[key], startDuration, endDuration);
+    //       startInterval = null;
+    //       res.add(newInterval);
+    //     }
+    //   }
+    // }
     return res;
   }
 
