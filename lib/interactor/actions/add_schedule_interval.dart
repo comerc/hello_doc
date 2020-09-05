@@ -15,7 +15,6 @@ class AddSchedulenterval extends ActionBase {
         error = Error(e.type.toString(), detail: e.description);
       } else {
         error = Error("unknown");
-        return;
       }
     }
     onComplete(this);

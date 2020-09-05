@@ -22,78 +22,146 @@ class Schedule extends ViewBase {
         backgroundColor: Color(0xFFF2F5F8),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: ValueListenableBuilder<bool>(
-            valueListenable: presenter.busy,
-            builder: (context, busy, _) {
-              return SizedBox(
-                width: 250,
-                child: IgnorePointer(
-                  ignoring: busy,
-                  child: RaisedButton(
-                      color: Color(0xFF5775FF),
-                      // shape: ShapeBorder(),
-                      onPressed: () async {
-                        var error = await presenter.save();
-                        if (error != null) {
-                          _showInfo(context, error.title, error.detail);
-                        }
-                      },
-                      child: busy
-                          ? SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white,
-                                )),
-                              ),
-                            )
-                          : Text(
-                              "Готово",
-                              style: TextStyle(
-                                  fontFamily: "Ubuntu",
-                                  fontSize: 15,
-                                  color: Colors.white),
-                            )),
-                ),
-              );
+            valueListenable: presenter.loading,
+            builder: (context, loading, _) {
+              return ValueListenableBuilder(
+                  valueListenable: presenter.isErrorLoading,
+                  builder: (context, bool isErrorLoading, _) {
+                    if (isErrorLoading || loading) return Container();
+                    return ValueListenableBuilder<bool>(
+                        valueListenable: presenter.busy,
+                        builder: (context, busy, _) {
+                          return SizedBox(
+                            width: 250,
+                            child: IgnorePointer(
+                              ignoring: busy,
+                              child: RaisedButton(
+                                  color: Color(0xFF5775FF),
+                                  // shape: ShapeBorder(),
+                                  onPressed: () async {
+                                    var error = await presenter.save();
+                                    if (error != null) {
+                                      _showInfo(
+                                          context, error.title, error.detail);
+                                    }
+                                  },
+                                  child: busy
+                                      ? SizedBox(
+                                          height: 24,
+                                          width: 24,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(
+                                              Colors.white,
+                                            )),
+                                          ),
+                                        )
+                                      : Text(
+                                          "Готово",
+                                          style: TextStyle(
+                                              fontFamily: "Ubuntu",
+                                              fontSize: 15,
+                                              color: Colors.white),
+                                        )),
+                            ),
+                          );
+                        });
+                  });
             }),
         body: Container(
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
           child: ValueListenableBuilder(
-            valueListenable: presenter.loading,
-            builder: (context, bool loading, _) {
-              return loading
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : CustomScrollView(
-                      slivers: <Widget>[
-                        widgets.SnapSliver(
-                          floating: false,
-                          pinned: false,
-                          maxHeight: MediaQuery.of(context).padding.top + 130,
-                          minHeight: MediaQuery.of(context).padding.top + 130,
-                          onSnapChanged: (snap) {},
-                          child: components.Header(),
+              valueListenable: presenter.isErrorLoading,
+              builder: (context, bool isErrorLoading, _) {
+                if (isErrorLoading) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Не удалось загрузить расписание"),
                         ),
-                        StreamBuilder<List<notifications.DayItem>>(
-                            stream: presenter.scheduleModelStream,
-                            builder: (context, snapshot) {
-                              return SliverList(
-                                  delegate: snapshot.hasData
-                                      ? SliverChildListDelegate(
-                                          buildSheduleList(
-                                              snapshot, presenter, context),
-                                        )
-                                      : SliverChildListDelegate([]));
-                            }),
+                        ValueListenableBuilder<bool>(
+                            valueListenable: presenter.busy,
+                            builder: (context, busy, _) {
+                              return SizedBox(
+                                width: 250,
+                                child: IgnorePointer(
+                                  ignoring: busy,
+                                  child: RaisedButton(
+                                      color: Color(0xFF5775FF),
+                                      // shape: ShapeBorder(),
+                                      onPressed: () async {
+                                        await presenter.reload();
+                                      },
+                                      child: busy
+                                          ? SizedBox(
+                                              height: 24,
+                                              width: 24,
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        valueColor:
+                                                            AlwaysStoppedAnimation<
+                                                                Color>(
+                                                  Colors.white,
+                                                )),
+                                              ),
+                                            )
+                                          : Text(
+                                              "Загрузить снова",
+                                              style: TextStyle(
+                                                  fontFamily: "Ubuntu",
+                                                  fontSize: 15,
+                                                  color: Colors.white),
+                                            )),
+                                ),
+                              );
+                            })
                       ],
-                    );
-            },
-          ),
+                    ),
+                  );
+                } else
+                  return ValueListenableBuilder(
+                    valueListenable: presenter.loading,
+                    builder: (context, bool loading, _) {
+                      return loading
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : CustomScrollView(
+                              slivers: <Widget>[
+                                widgets.SnapSliver(
+                                  floating: false,
+                                  pinned: false,
+                                  maxHeight:
+                                      MediaQuery.of(context).padding.top + 130,
+                                  minHeight:
+                                      MediaQuery.of(context).padding.top + 130,
+                                  onSnapChanged: (snap) {},
+                                  child: components.Header(),
+                                ),
+                                StreamBuilder<List<notifications.DayItem>>(
+                                    stream: presenter.scheduleModelStream,
+                                    builder: (context, snapshot) {
+                                      return SliverList(
+                                          delegate: snapshot.hasData
+                                              ? SliverChildListDelegate(
+                                                  buildSheduleList(snapshot,
+                                                      presenter, context),
+                                                )
+                                              : SliverChildListDelegate([]));
+                                    }),
+                              ],
+                            );
+                    },
+                  );
+              }),
         ),
       ),
     );

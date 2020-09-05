@@ -79,12 +79,15 @@ class DayTimeInterval extends Equatable {
 
   bool isIntersectionWith(DayTimeInterval other) {
     bool res = false;
+
     if (other.startTime.compareTo(this.startTime) >= 0 &&
         other.startTime.compareTo(this.endTime) <= 0) {
       res = true;
-    }
-    if (other.endTime.compareTo(this.startTime) >= 0 &&
+    } else if (other.endTime.compareTo(this.startTime) >= 0 &&
         other.endTime.compareTo(this.endTime) <= 0) {
+      res = true;
+    } else if (other.startTime.compareTo(this.startTime) <= 0 &&
+        other.endTime.compareTo(this.endTime) >= 0) {
       res = true;
     }
     return res;

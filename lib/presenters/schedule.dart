@@ -9,6 +9,7 @@ class Schedule extends PresenterBase {
   Schedule();
   final loading = ValueNotifier<bool>(true);
   final busy = ValueNotifier<bool>(false);
+  final isErrorLoading = ValueNotifier<bool>(false);
 
   Stream<List<notifications.DayItem>> get scheduleModelStream {
     _scheduleNotifierStream ??= subscribeTo(notifications.ScheduleNotifier());
@@ -73,11 +74,27 @@ class Schedule extends PresenterBase {
     return null;
   }
 
+  Future<actions.Error> reload() async {
+    isErrorLoading.value = false;
+    loading.value = true;
+    var result = await execute(actions.LoadSchedule(entities.UserId(342)));
+    if (result.error != null) {
+      loading.value = false;
+      isErrorLoading.value = true;
+      return result.error;
+    }
+    loading.value = false;
+    return null;
+  }
+
   @override
   void initiate() async {
     await execute(actions.InitializeApplication());
-    await execute(actions.LoadSchedule(entities.UserId(342)));
+    var result = await execute(actions.LoadSchedule(entities.UserId(342)));
     loading.value = false;
+    if (result.error != null) {
+      isErrorLoading.value = true;
+    }
   }
 
   Stream<notifications.ScheduleNotifier> _scheduleNotifierStream;

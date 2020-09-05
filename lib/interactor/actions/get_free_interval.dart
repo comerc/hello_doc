@@ -63,7 +63,6 @@ class GetFreeInterval extends ActionBase {
         error = Error(e.type.toString(), detail: e.description);
       } else {
         error = Error("unknown");
-        return;
       }
     }
     if (freeDayTimeInterval == null) {

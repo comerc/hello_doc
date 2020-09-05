@@ -28,7 +28,6 @@ class SaveSchedule extends ActionBase {
         error = e;
       } else {
         error = Error("unknown");
-        return;
       }
     }
     onComplete(this);

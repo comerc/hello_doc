@@ -1,3 +1,5 @@
+import 'package:hello_doc/utilities/logging.dart';
+
 import 'action_base.dart';
 import '../accessor.dart';
 import '../entities/index.dart' as pack_entities;
@@ -22,23 +24,29 @@ class UpdateSchedulenterval extends ActionBase {
           oldInterval.copyWith(startTime: startTime, endTime: endTime);
       entitieSchedule.updateItem(newInterval);
 
-      for (var currentInterval
-          in entitieSchedule.itemsbyWeekday(newInterval.weekday)) {
-        for (var testInterval
-            in entitieSchedule.itemsbyWeekday(newInterval.weekday)) {
-          if (currentInterval.id == testInterval.id) continue;
-          var intersectedInterval = currentInterval.copyWith(
-              isInersected: currentInterval.isIntersectionWith(testInterval));
+      var items = List<pack_entities.DayTimeInterval>.from(
+          entitieSchedule.itemsbyWeekday(newInterval.weekday));
 
-          entitieSchedule.updateItem(intersectedInterval);
+      for (int i = 0; i < items.length; i++) {
+        items[i] = items[i].copyWith(isInersected: false);
+      }
+      for (int i = 0; i < items.length; i++) {
+        for (int j = 0; j < items.length; j++) {
+          if (items[i].id == items[j].id) continue;
+          bool intersected = items[i].isIntersectionWith(items[j]);
+          if (intersected) {
+            items[i] = items[i].copyWith(isInersected: true);
+          }
         }
+      }
+      for (int i = 0; i < items.length; i++) {
+        entitieSchedule.updateItem(items[i]);
       }
     } catch (e) {
       if (e is pack_entities.ScheduleException) {
         error = Error(e.type.toString(), detail: e.description);
       } else {
         error = Error("unknown");
-        return;
       }
       onComplete(this);
     }
