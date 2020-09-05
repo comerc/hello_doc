@@ -34,8 +34,8 @@ class Schedule extends ViewBase {
                         widgets.SnapSliver(
                           floating: false,
                           pinned: false,
-                          maxHeight: MediaQuery.of(context).padding.top + 200,
-                          minHeight: MediaQuery.of(context).padding.top + 200,
+                          maxHeight: MediaQuery.of(context).padding.top + 130,
+                          minHeight: MediaQuery.of(context).padding.top + 130,
                           onSnapChanged: (snap) {},
                           child: components.Header(),
                         ),
@@ -48,8 +48,15 @@ class Schedule extends ViewBase {
                                           List<Widget>.from(
                                             snapshot.data
                                                 .map<Widget>((dayItem) {
-                                              return Container(
-                                                child: Text(dayItem.name),
+                                              return components.DaySchedule(
+                                                name: dayItem.name,
+                                                intervals: dayItem.intervals,
+                                                active: dayItem.active,
+                                                onActiveChanged:
+                                                    (value, weekday) {},
+                                                onIntervalAdded: (weekday) {},
+                                                onIntervalChanged: (start, end,
+                                                    weekday, intervalId) {},
                                               );
                                             }),
                                           ),

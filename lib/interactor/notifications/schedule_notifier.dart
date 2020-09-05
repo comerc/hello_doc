@@ -4,14 +4,14 @@ import 'notification_base.dart';
 import '../entities/index.dart';
 import '../accessor.dart';
 
-// @immutable
-// class IntervalItem {
-//   final Duration start;
-//   final Duration end;
-//   final DateTime localCreationDate;
-//   final DayTimeIntervalId id;
-//   IntervalItem(this.start, this.end, this.localCreationDate, this.id);
-// }
+@immutable
+class IntervalItem {
+  final Duration start;
+  final Duration end;
+  final DateTime localCreationDate;
+  final DayTimeIntervalId id;
+  IntervalItem(this.start, this.end, this.localCreationDate, this.id);
+}
 
 @immutable
 class DayItem {
@@ -19,7 +19,7 @@ class DayItem {
   final bool active;
   final int number;
   final bool addIntervalAvailable;
-  final List<DayTimeInterval> intervals;
+  final List<IntervalItem> intervals;
   DayItem(this.name, this.active, this.intervals, this.number,
       this.addIntervalAvailable);
 }
@@ -51,8 +51,9 @@ class ScheduleNotifier extends NotificationBase {
       if (intervals.isEmpty) {
         newModel.add(DayItem(weekdayNames[i], false, [], i, true));
       } else {
-        List<DayTimeInterval> intervalItems =
-            List<DayTimeInterval>.from(intervals);
+        List<IntervalItem> intervalItems = List<IntervalItem>.from(
+            intervals.map<IntervalItem>((e) => IntervalItem(
+                e.startTime, e.endTime, e.localCreationDate, e.id)));
         intervalItems.sort((a, b) {
           return a.localCreationDate.compareTo(b.localCreationDate);
         });
