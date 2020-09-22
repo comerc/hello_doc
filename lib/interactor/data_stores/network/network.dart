@@ -9,30 +9,28 @@ import '../../../application_settings.dart';
 
 enum NetworkStatus { online, synchronization }
 
-extension NetworkError on DioError {
-  Error get actionError {
-    switch (this.type) {
-      case DioErrorType.CANCEL:
-        return Error('network_cancel');
-        break;
-      case DioErrorType.CONNECT_TIMEOUT:
-        return Error('network_timeout');
-        break;
-      case DioErrorType.DEFAULT:
-        return Error('network_default', status: this.response.statusCode);
-        break;
-      case DioErrorType.RECEIVE_TIMEOUT:
-        return Error('network_timeout');
-        break;
-      case DioErrorType.RESPONSE:
-        return Error('network', status: this.response.statusCode);
-        break;
-      case DioErrorType.SEND_TIMEOUT:
-        return Error('network_timeout');
-        break;
-      default:
-        return Error('network_unknown');
-    }
+getActionError(DioError error) {
+  switch (error.type) {
+    case DioErrorType.CANCEL:
+      return Error('network_cancel');
+      break;
+    case DioErrorType.CONNECT_TIMEOUT:
+      return Error('network_timeout');
+      break;
+    case DioErrorType.DEFAULT:
+      return Error('network_default', status: error.response.statusCode);
+      break;
+    case DioErrorType.RECEIVE_TIMEOUT:
+      return Error('network_timeout');
+      break;
+    case DioErrorType.RESPONSE:
+      return Error('network', status: error.response.statusCode);
+      break;
+    case DioErrorType.SEND_TIMEOUT:
+      return Error('network_timeout');
+      break;
+    default:
+      return Error('network_unknown');
   }
 }
 
@@ -166,7 +164,7 @@ class RestNetwork extends INetwork {
       }
     } catch (error) {
       if ((error is DioError)) {
-        throw error.actionError;
+        throw getActionError(error);
       } else {
         throw Error("network_unknown");
       }
@@ -175,4 +173,4 @@ class RestNetwork extends INetwork {
   }
 }
 
-int counter = 0;
+// int counter = 0;
