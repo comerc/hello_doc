@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_doc/application_settings.dart';
 import '../views/view_base.dart';
 import '../presenters/index.dart' as presenters;
 import '../widgets/index.dart' as widgets;
@@ -12,6 +13,7 @@ class Schedule extends ViewBase {
     final presenter =
         presenters.PresenterProvider.of<presenters.Schedule>(context);
     return MaterialApp(
+      title: ApplicationSettings.appName,
       navigatorKey: presenter.mainNavigationKey,
       theme: ThemeData(
         brightness: Brightness.light,

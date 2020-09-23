@@ -1,7 +1,7 @@
 import 'utilities/logging.dart';
 
 class ApplicationSettings {
-  static const String app_name = 'Hello Doc!';
+  static const String appName = 'Hello Doc!';
   static const int connectTimeout = 3000;
   static const int receiveTimeout = 3000;
   static const bool debug = true;
