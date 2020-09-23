@@ -207,13 +207,16 @@ class _DayScheduleState extends State<DaySchedule> {
   }
 
   Widget intervalDisplay(IntervalItem interval) {
+    const kGoldenRatio = 1.618034;
+    final height = 55.0;
+    final width = height * kGoldenRatio;
     return Padding(
       padding: const EdgeInsets.only(top: 12),
       child: Row(
         children: [
           Container(
-            height: 55,
-            // width: 141,
+            height: height,
+            width: width,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(
                 Radius.circular(10),
