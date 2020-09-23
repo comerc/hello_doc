@@ -55,7 +55,8 @@ class DaySchedule extends StatefulWidget {
   _DayScheduleState createState() => _DayScheduleState();
 }
 
-class _DayScheduleState extends State<DaySchedule> {
+class _DayScheduleState extends State<DaySchedule>
+    with SingleTickerProviderStateMixin {
   @override
   void didUpdateWidget(covariant DaySchedule oldWidget) {
     var needSetState = false;
@@ -89,9 +90,9 @@ class _DayScheduleState extends State<DaySchedule> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return _buildAnimatedSize(Column(
       children: content(context),
-    );
+    ));
   }
 
   List<Widget> content(BuildContext context) {
@@ -282,6 +283,17 @@ class _DayScheduleState extends State<DaySchedule> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAnimatedSize(Widget child) {
+    const kExpand = Duration(milliseconds: 200);
+    return AnimatedSize(
+      child: child,
+      alignment: Alignment.topCenter,
+      duration: kExpand,
+      reverseDuration: kExpand,
+      vsync: this,
     );
   }
 }

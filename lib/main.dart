@@ -3,12 +3,12 @@ import 'presenters/presenter_provider.dart';
 import 'views/index.dart' as views;
 import 'presenters/index.dart' as presenters;
 
-// + реализовать elevation для appBar
-// + увеличить расстояние между интервалами внутри дня
-// + применить золотое сечение для пропорций полей ввода
 // + исправить варнинги pedantic
 // + установить MaterialApp.title
-// TODO: - AnimatedBox
+// + увеличить расстояние между интервалами внутри дня
+// + применить золотое сечение для пропорций полей ввода
+// + реализовать elevation для appBar
+// + добавить анимацию для блока расписания на день
 // TODO: - клик по ряду день недели c InkWell
 // TODO: - bot_toast для ошибок вне контекста Scaffold
 // TODO: - нет обратной связи об успешной записи изменений
