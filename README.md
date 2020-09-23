@@ -2,7 +2,7 @@
 
 Демо проект HelloDoc!
 
-- [ТЗ][./тестовое_задание_для_flutter_разработчика.pdf]
+- [ТЗ](./тестовое_задание_для_flutter_разработчика.pdf)
 - [API](https://hellodoc.docs.apiary.io/)
 
 ## Flutter Version
