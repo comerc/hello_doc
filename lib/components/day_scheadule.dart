@@ -113,7 +113,7 @@ class _DayScheduleState extends State<DaySchedule> {
     ];
     if (!widget.active) return result;
     result.addAll(
-      widget.intervals.map<Widget>((interval) {
+      widget.intervals.map<Widget>((IntervalItem interval) {
         return Column(
           children: [
             Padding(
@@ -124,6 +124,10 @@ class _DayScheduleState extends State<DaySchedule> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: intervalInput(interval),
             ),
+            if (widget.intervals.last != interval)
+              SizedBox(
+                height: 20,
+              ),
           ],
         );
       }),
