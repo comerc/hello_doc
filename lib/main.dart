@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
+import 'presenters/presenter_provider.dart';
 import 'views/index.dart' as views;
 import 'presenters/index.dart' as presenters;
-import 'presenters/presenter_provider.dart';
 
-// TODO: vertical orientation
-// TODO: скроллировать "Готово"
-// TODO: header elevation
-// TODO: форма в диалоге
-// TODO: сепараторы
-// TODO: AnimatedBox
-// TODO: device_preview
-// TODO: SafeArea
-// TODO: bot_toast для ошибок вне контекста Scaffold
+// + реализовать elevation для appBar
+// + увеличить расстояние между интервалами внутри дня
+// + применить золотое сечение для пропорций полей ввода
+// + исправить варнинги pedantic
+// + установить MaterialApp.title
+// TODO: - AnimatedBox
+// TODO: - клик по ряду день недели c InkWell
+// TODO: - bot_toast для ошибок вне контекста Scaffold
+// TODO: - нет обратной связи об успешной записи изменений
+// TODO: - отключать кнопку "Готово", пока выполняется запись
+// TODO: - точки в ползунках?
+// TODO: кнопка "Готово" сливается по цвету - поменять?
+// TODO: форма в диалоге, которая закрывается после записи
+// TODO: проверить SafeArea для .appBar с помощью device_preview
 // TODO: import.dart
 // TODO: StartScreen для initialRoute
 // TODO: MediaQueryWrap
 // TODO: appBarTheme
-// TODO: нет обратной связи об успешной записи изменений
-// TODO: отключать кнопку "ГОТОВО", пока выполняется запись
 // TODO: как удалить интервал внутри дня, чтобы не стирать весь день?
-// TODO: исправить варнинги pedantic
+// TODO: flutter doctor -v выводит "Channel unknown"
+// TODO: расположение контролов по сетке 8 или 16
 
 void main() {
-  runApp(PresenterProvider<presenters.Schedule>(
-    child: views.Schedule(),
-    presenter: presenters.Schedule(),
-  ));
+  runApp(
+    PresenterProvider<presenters.Schedule>(
+      child: views.Schedule(),
+      presenter: presenters.Schedule(),
+    ),
+  );
 }
