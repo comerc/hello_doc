@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hello_doc/utilities/logging.dart';
 import 'presenter_base.dart';
-import '../views/view_base.dart';
+// import '../views/view_base.dart';
 
 class PresenterProvider<T extends PresenterBase> extends StatefulWidget {
   final T presenter;
-  final ViewBase child;
+  final Widget child;
 
   PresenterProvider({
     Key key,
