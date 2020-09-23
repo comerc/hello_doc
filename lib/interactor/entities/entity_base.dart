@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 
 abstract class EntityBase {
   final StreamController<EntityBase> _controller;
@@ -9,7 +8,7 @@ abstract class EntityBase {
   EntityBase.from(EntityBase other) : _controller = other._controller;
   void changed() {
     if (_controller == null) return;
-    _controller.sink.add(this.clone());
+    _controller.sink.add(clone());
   }
 
   EntityBase clone();

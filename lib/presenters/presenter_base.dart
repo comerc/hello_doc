@@ -6,15 +6,14 @@ import '../utilities/logging.dart';
 import '../interactor/accessor_controller.dart';
 import '../interactor/actions/action_base.dart';
 import '../interactor/notifications/notification_base.dart';
-import '../interactor/notifications/index.dart';
 import '../interactor/actions/index.dart';
 
 abstract class PresenterBase {
-  AccessorController _controller = new AccessorController();
+  final AccessorController _controller = AccessorController();
   bool initiated = false;
 
-  Set<int> _myNotifications = {};
-  Set<String> _myActions = {};
+  final Set<int> _myNotifications = {};
+  final Set<String> _myActions = {};
 
   final ValueNotifier<String> networkError = ValueNotifier<String>(null);
 
@@ -35,19 +34,20 @@ abstract class PresenterBase {
     _myActions.add(action.id);
     _controller.addAction(action);
 
-    Logger.logAccessor("Execute start: ${action.id}");
+    Logger.logAccessor('Execute start: ${action.id}');
 
     await _controller.actionStream.any((ActionBase action) {
       if (!(action is T)) return false;
-      bool res = _myActions.contains(action.id);
-      if (res) {
+      final result = _myActions.contains(action.id);
+      if (result) {
         _myActions.remove(action.id);
         actionRes = action as T;
       }
-      if (initiated)
-        return res;
-      else
+      if (initiated) {
+        return result;
+      } else {
         return false;
+      }
     });
     if (initiated) return actionRes;
     return null;
@@ -57,11 +57,11 @@ abstract class PresenterBase {
     _myNotifications.add(notification.id);
     _controller.addNotification(notification);
     return _controller.notificationStream.where((notification) {
-      bool res = false;
+      var result = false;
       if (_myNotifications.contains(notification.id)) {
-        res = notification is T;
+        result = notification is T;
       }
-      return res;
+      return result;
     }).cast<T>();
   }
 
@@ -73,10 +73,10 @@ abstract class PresenterBase {
   bool onBackButton(bool stop, RouteInfo routeInfo) => false;
 
   void dispose() {
-    Logger.logPresenter("Dispose presenter: $runtimeType");
+    Logger.logPresenter('Dispose presenter: $runtimeType');
     BackButtonInterceptor.remove(onBackButton);
 
-    for (int notificationId in _myNotifications) {
+    for (final notificationId in _myNotifications) {
       _controller.removeNotification(notificationId);
     }
     _myNotifications.clear();

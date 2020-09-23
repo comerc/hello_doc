@@ -7,34 +7,36 @@ import 'notifications/notification_base.dart';
 import 'accessor.dart';
 
 class AccessorController extends Controller {
-  StreamController<NotificationBase> _controller =
+  final StreamController<NotificationBase> _controller =
       StreamController<NotificationBase>.broadcast(onListen: () {
-    Logger.logAccessor("InteractorController, notification: LISTEN");
+    Logger.logAccessor('InteractorController, notification: LISTEN');
   }, onCancel: () {
-    Logger.logAccessor("InteractorController, notification: CANCEL");
+    Logger.logAccessor('InteractorController, notification: CANCEL');
   });
 
-  StreamController<ActionBase> _actionController = StreamController<ActionBase>.broadcast(
+  final StreamController<ActionBase> _actionController =
+      StreamController<ActionBase>.broadcast(
     onListen: () {
-      Logger.logAccessor("InteractorController, action: LISTEN");
+      Logger.logAccessor('InteractorController, action: LISTEN');
     },
     onCancel: () {
-      Logger.logAccessor("InteractorController, action: CANCEL");
+      Logger.logAccessor('InteractorController, action: CANCEL');
     },
   );
-  List<NotificationBase> _notificationsBuffer = [];
-  List<ActionBase> _actionsBuffer = [];
-  static final AccessorController _interator = new AccessorController._internal();
+  final List<NotificationBase> _notificationsBuffer = <NotificationBase>[];
+  final List<ActionBase> _actionsBuffer = <ActionBase>[];
+  static final AccessorController _interator = AccessorController._internal();
   AccessorController._internal();
 
   Stream<NotificationBase> get notificationStream => _controller.stream;
   Stream<ActionBase> get actionStream => _actionController.stream;
 
   void addNotification(NotificationBase notification) {
-    if (state == ControllerState.initialized)
+    if (state == ControllerState.initialized) {
       send(notification);
-    else
+    } else {
       _notificationsBuffer.add(notification);
+    }
   }
 
   void removeNotification(int notificationId) {
@@ -42,10 +44,11 @@ class AccessorController extends Controller {
   }
 
   void addAction(ActionBase action) {
-    if (state == ControllerState.initialized)
+    if (state == ControllerState.initialized) {
       send(action);
-    else
+    } else {
       _actionsBuffer.add(action);
+    }
   }
 
   static bool initial = false;
@@ -56,31 +59,35 @@ class AccessorController extends Controller {
     }
     return _interator;
   }
+
+  @override
   void onNewMessage(dynamic data) {
     if (data is NotificationBase) {
-      Logger.logAccessor("New message from interactor: $data, ${data.id}");
+      Logger.logAccessor('New message from interactor: $data, ${data.id}');
       _controller.sink.add(data);
     } else if (data is ActionBase) {
-      Logger.logAccessor("New message from interactor: $data, ${data.id}");
+      Logger.logAccessor('New message from interactor: $data, ${data.id}');
       _actionController.sink.add(data);
     }
   }
 
+  @override
   void onError(dynamic err) {
-    Logger.logError("$err");
+    Logger.logError('$err');
   }
 
+  @override
   void onStateChanged(ControllerState state) {
-    Logger.logAccessor("New controller state: $state");
+    Logger.logAccessor('New controller state: $state');
     if (state == ControllerState.initialized) {
       if (_notificationsBuffer.isNotEmpty) {
-        for (NotificationBase notification in _notificationsBuffer) {
+        for (final notification in _notificationsBuffer) {
           send(notification);
         }
         _notificationsBuffer.clear();
       }
       if (_actionsBuffer.isNotEmpty) {
-        for (ActionBase action in _actionsBuffer) {
+        for (final action in _actionsBuffer) {
           send(action);
         }
         _actionsBuffer.clear();
@@ -89,7 +96,7 @@ class AccessorController extends Controller {
   }
 
   static void work(SendPort sendPort) {
-    new Accessor(sendPort).work();
+    Accessor(sendPort).work();
   }
 
   void dispose() {

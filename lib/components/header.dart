@@ -19,7 +19,7 @@ class Header extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 24),
             child: Text(
-              header ?? "График работы",
+              header ?? 'График работы',
               textAlign: TextAlign.left,
               style: TextStyle(
                 fontFamily: 'Ubuntu',
@@ -33,7 +33,7 @@ class Header extends StatelessWidget {
             padding: const EdgeInsets.only(top: 30),
             child: Text(
               text ??
-                  "Укажите время, когда вы доступны для звонков и сможете быстро отвечать пациентам",
+                  'Укажите время, когда вы доступны для звонков и сможете быстро отвечать пациентам',
               textAlign: TextAlign.left,
               style: TextStyle(
                   fontFamily: 'Ubuntu',

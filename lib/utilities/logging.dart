@@ -17,7 +17,7 @@ class Logger {
     if (!ApplicationSettings.debug) return;
 
     if (ApplicationSettings.loggingLayers == null || type == null) {
-      debugPrint(object);
+      debugPrint(object.toString());
     } else if (type != null &&
         ApplicationSettings.loggingLayers.contains(type)) {
       var tag = type.toString().replaceAll('LogType.', '');
@@ -50,6 +50,7 @@ class Logger {
   }
 
   static void logError(Object object) {
+    // TODO: сообщение об ошибке выводить более информативно
     log(object, type: LogType.Error);
   }
 

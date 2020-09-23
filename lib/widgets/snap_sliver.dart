@@ -94,7 +94,8 @@ class _SnapSliverDelegate extends SliverPersistentHeaderDelegate {
   final FloatingHeaderSnapConfiguration snapConfiguration;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     // final Widget appBar = FlexibleSpaceBar.createSettings(
     //   minExtent: minExtent,
     //   maxExtent: maxExtent,
@@ -117,7 +118,8 @@ class _SnapSliverDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class _FloatingSliver extends StatefulWidget {
-  const _FloatingSliver({Key key, this.child, this.onSnapChanged}) : super(key: key);
+  const _FloatingSliver({Key key, this.child, this.onSnapChanged})
+      : super(key: key);
 
   final Widget child;
   final void Function(bool) onSnapChanged;
@@ -131,19 +133,26 @@ class _FloatingSliverState extends State<_FloatingSliver> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_position != null) _position.isScrollingNotifier.removeListener(_isScrollingListener);
+    if (_position != null) {
+      _position.isScrollingNotifier.removeListener(_isScrollingListener);
+    }
     _position = Scrollable.of(context)?.position;
-    if (_position != null) _position.isScrollingNotifier.addListener(_isScrollingListener);
+    if (_position != null) {
+      _position.isScrollingNotifier.addListener(_isScrollingListener);
+    }
   }
 
   @override
   void dispose() {
-    if (_position != null) _position.isScrollingNotifier.removeListener(_isScrollingListener);
+    if (_position != null) {
+      _position.isScrollingNotifier.removeListener(_isScrollingListener);
+    }
     super.dispose();
   }
 
   RenderSliverFloatingPersistentHeader _headerRenderer() {
-    return context.findAncestorRenderObjectOfType<RenderSliverFloatingPersistentHeader>();
+    return context
+        .findAncestorRenderObjectOfType<RenderSliverFloatingPersistentHeader>();
   }
 
   void _isScrollingListener() {
@@ -152,7 +161,7 @@ class _FloatingSliverState extends State<_FloatingSliver> {
 // _position.
     // When a scroll stops, then maybe snap the appbar into view.
     // Similarly, when a scroll starts, then maybe stop the snap animation.
-    final RenderSliverFloatingPersistentHeader header = _headerRenderer();
+    final header = _headerRenderer();
     widget.onSnapChanged(header.geometry.layoutExtent == 0.0);
     // debugPrint("header.scrollExtent, ${header.geometry.scrollExtent}");
     // debugPrint("header.hasVisualOverflow, ${header.geometry.hasVisualOverflow}");

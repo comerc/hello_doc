@@ -45,12 +45,13 @@ class DayTimeInterval extends Equatable {
   DayTimeInterval copyWith(
       {Duration startTime, Duration endTime, bool isInersected}) {
     return DayTimeInterval(
-        this.weekday,
-        startTime ?? this.startTime,
-        endTime ?? this.endTime,
-        this.localCreationDate,
-        this.id,
-        isInersected ?? this.isInersected);
+      weekday,
+      startTime ?? this.startTime,
+      endTime ?? this.endTime,
+      localCreationDate,
+      id,
+      isInersected ?? this.isInersected,
+    );
   }
 
   DayTimeInterval get freeLeft {
@@ -58,7 +59,7 @@ class DayTimeInterval extends Equatable {
       return null;
     } else {
       return DayTimeInterval(
-        this.weekday,
+        weekday,
         Duration.zero,
         startTime - Duration(minutes: 30),
       );
@@ -70,7 +71,7 @@ class DayTimeInterval extends Equatable {
       return null;
     } else {
       return DayTimeInterval(
-        this.weekday,
+        weekday,
         endTime + Duration(minutes: 30),
         Duration(hours: 24),
       );
@@ -78,19 +79,19 @@ class DayTimeInterval extends Equatable {
   }
 
   bool isIntersectionWith(DayTimeInterval other) {
-    bool res = false;
+    var result = false;
 
-    if (other.startTime.compareTo(this.startTime) >= 0 &&
-        other.startTime.compareTo(this.endTime) <= 0) {
-      res = true;
-    } else if (other.endTime.compareTo(this.startTime) >= 0 &&
-        other.endTime.compareTo(this.endTime) <= 0) {
-      res = true;
-    } else if (other.startTime.compareTo(this.startTime) <= 0 &&
-        other.endTime.compareTo(this.endTime) >= 0) {
-      res = true;
+    if (other.startTime.compareTo(startTime) >= 0 &&
+        other.startTime.compareTo(endTime) <= 0) {
+      result = true;
+    } else if (other.endTime.compareTo(startTime) >= 0 &&
+        other.endTime.compareTo(endTime) <= 0) {
+      result = true;
+    } else if (other.startTime.compareTo(startTime) <= 0 &&
+        other.endTime.compareTo(endTime) >= 0) {
+      result = true;
     }
-    return res;
+    return result;
   }
 
   @override
@@ -110,34 +111,34 @@ class ScheduleException implements Exception {
   final SheduleExceptionType type;
   final dynamic source;
   final int offset;
-  @pragma("vm:entry-point")
+  @pragma('vm:entry-point')
   const ScheduleException(
       [this.type = SheduleExceptionType.unknown, this.source, this.offset]);
 
   @override
   String toString() {
-    return "ScheduleException: $type";
+    return 'ScheduleException: $type';
   }
 
   String get description {
     switch (type) {
       case SheduleExceptionType.unknown:
-        return "Что-то пошло не так...";
+        return 'Что-то пошло не так...';
         break;
       case SheduleExceptionType.intersect:
-        return "Интервалы не должны пересекаться";
+        return 'Интервалы не должны пересекаться';
         break;
       case SheduleExceptionType.not_contains:
-        return "Интервал не существует...";
+        return 'Интервал не существует...';
         break;
       case SheduleExceptionType.already_contains:
-        return "Интервал уже существует...";
+        return 'Интервал уже существует...';
         break;
       case SheduleExceptionType.more_than_one:
-        return "Более одного идентичного интевала";
+        return 'Более одного идентичного интевала';
         break;
       default:
-        return "Что-то пошло не так...";
+        return 'Что-то пошло не так...';
     }
   }
 }
@@ -146,7 +147,7 @@ abstract class ISchedule extends EntityBase {
   ISchedule(StreamController<EntityBase> controller) : super(controller);
   List<DayTimeInterval> get items;
   set items(List<DayTimeInterval> val);
-  Iterable<DayTimeInterval> itemsbyWeekday(int weekday);
+  Iterable<DayTimeInterval> itemsByWeekday(int weekday);
   void addItem(DayTimeInterval item);
   void removeItem(DayTimeInterval item);
   void updateItem(DayTimeInterval item);
@@ -170,13 +171,14 @@ class Schedule extends ISchedule {
     changed();
   }
 
-  Iterable<DayTimeInterval> itemsbyWeekday(int weekday) =>
+  @override
+  Iterable<DayTimeInterval> itemsByWeekday(int weekday) =>
       _items.where((element) => element.weekday == weekday);
 
   @override
   void removeItem(DayTimeInterval item) {
     var intervalsInDay =
-        itemsbyWeekday(item.weekday).where((element) => element == item);
+        itemsByWeekday(item.weekday).where((element) => element == item);
     if (intervalsInDay.isEmpty) {
       throw ScheduleException(SheduleExceptionType.not_contains);
     }
@@ -187,8 +189,9 @@ class Schedule extends ISchedule {
     changed();
   }
 
+  @override
   void addItem(DayTimeInterval newInterval) {
-    for (var currentInterval in itemsbyWeekday(newInterval.weekday)) {
+    for (var currentInterval in itemsByWeekday(newInterval.weekday)) {
       if (currentInterval == newInterval) {
         throw ScheduleException(SheduleExceptionType.already_contains);
       }
@@ -208,7 +211,7 @@ class Schedule extends ISchedule {
     if (itemIndex < 0) {
       throw ScheduleException(SheduleExceptionType.not_contains);
     }
-    // for (var currentInterval in itemsbyWeekday(newInterval.weekday)) {
+    // for (var currentInterval in itemsByWeekday(newInterval.weekday)) {
     //   if (currentInterval.id == newInterval.id) continue;
     //   if (currentInterval.isIntersectionWith(newInterval)) {
     //     if()
@@ -221,6 +224,6 @@ class Schedule extends ISchedule {
 
   @override
   EntityBase clone() {
-    return Schedule(null, items: List<DayTimeInterval>.from(this._items));
+    return Schedule(null, items: List<DayTimeInterval>.from(_items));
   }
 }

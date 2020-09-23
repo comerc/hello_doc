@@ -1,5 +1,5 @@
-import "dart:core";
-import "dart:async";
+import 'dart:core';
+import 'dart:async';
 import 'dart:isolate';
 import 'package:gate/gate.dart';
 import '../utilities/logging.dart';
@@ -7,7 +7,6 @@ import 'entities/index.dart' as pack_entities;
 import 'data_stores/network/index.dart' as pack_data_stores;
 import 'actions/action_base.dart';
 import 'notifications/notification_base.dart';
-import '../application_settings.dart';
 
 abstract class IAccessor {
   pack_data_stores.INetwork get dataStoreNetwork;
@@ -21,8 +20,8 @@ abstract class IAccessor {
 class Accessor extends Worker implements IAccessor {
   pack_data_stores.INetwork _dataStoreNetwork;
   pack_entities.ISchedule _entitieSchedule;
-  List<NotificationBase> _notifications = [];
-  StreamController<pack_entities.EntityBase> _controller =
+  final List<NotificationBase> _notifications = [];
+  final StreamController<pack_entities.EntityBase> _controller =
       StreamController<pack_entities.EntityBase>.broadcast();
   Map<String, dynamic> mainThreadData;
 
@@ -40,29 +39,32 @@ class Accessor extends Worker implements IAccessor {
     return _entitieSchedule;
   }
 
+  @override
   Future initialize() async {
     dataStoreNetwork.init();
   }
 
-  onNewMessage(dynamic data) {
-    Logger.logAccessor("New message from controller: $data");
+  @override
+  void onNewMessage(dynamic data) {
+    Logger.logAccessor('New message from controller: $data');
     if (data is NotificationBase) {
       _notifications.add(data);
       _testNotificationOnActiveModels(data);
     } else if (data is ActionBase) {
-      ActionBase action = data;
+      final action = data;
       _runAction(action);
     } else if (data is int) {
-      int notificationId = data;
+      final notificationId = data;
       _notifications.removeWhere((item) {
         return item.id == notificationId;
       });
     }
   }
 
-  onWork() {
+  @override
+  void onWork() {
     _controller.stream.listen((pack_entities.EntityBase entity) {
-      for (NotificationBase notification in _notifications) {
+      for (final notification in _notifications) {
         _testNotification(notification, entity);
       }
     });
@@ -79,10 +81,11 @@ class Accessor extends Worker implements IAccessor {
 
   void _runAction(ActionBase action) {
     if (action is AsynchronousActionBase) {
-    } else
+    } else {
       action.doAction(this, (ActionBase result) {
         send(result);
       });
+    }
   }
 
   void _testNotificationOnActiveModels(NotificationBase notification) {

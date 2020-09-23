@@ -1,6 +1,4 @@
 import 'package:dio/dio.dart' as dio;
-import 'package:dio/dio.dart';
-import '../../../actions/action_base.dart';
 
 enum TypeRequest {
   post_request,

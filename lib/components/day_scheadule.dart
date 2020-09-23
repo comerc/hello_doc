@@ -5,18 +5,20 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 extension FormatDuration on Duration {
   String get toFormatString {
-    String twoDigits(int n) {
-      if (n >= 10) return "$n";
-      return "0$n";
+    String twoDigits(num n) {
+      if (n >= 10) {
+        return '$n';
+      }
+      return '0$n';
     }
 
     if (inMicroseconds < 0) {
-      return "-${(-this).toFormatString}";
+      return '-${(-this).toFormatString}';
     }
-    String twoDigitMinutes =
+    final twoDigitMinutes =
         twoDigits(inMinutes.remainder(Duration.minutesPerHour));
-    String twoDigitHours = twoDigits(inHours.remainder(Duration.hoursPerDay));
-    return "$twoDigitHours:$twoDigitMinutes";
+    final twoDigitHours = twoDigits(inHours.remainder(Duration.hoursPerDay));
+    return '$twoDigitHours:$twoDigitMinutes';
   }
 
   double get toValue {
@@ -56,7 +58,7 @@ class DaySchedule extends StatefulWidget {
 class _DayScheduleState extends State<DaySchedule> {
   @override
   void didUpdateWidget(covariant DaySchedule oldWidget) {
-    bool needSetState = false;
+    var needSetState = false;
     if (widget.name != oldWidget.name) {
       needSetState = true;
     }
@@ -69,7 +71,7 @@ class _DayScheduleState extends State<DaySchedule> {
     if (widget.intervals.length != oldWidget.intervals.length) {
       needSetState = true;
     } else {
-      for (int i = 0; i < widget.intervals.length; i++) {
+      for (var i = 0; i < widget.intervals.length; i++) {
         if (widget.intervals[i] != oldWidget.intervals[i]) {
           needSetState = true;
           break;
@@ -93,7 +95,7 @@ class _DayScheduleState extends State<DaySchedule> {
   }
 
   List<Widget> content(BuildContext context) {
-    List<Widget> result = [
+    final result = <Widget>[
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
@@ -175,9 +177,9 @@ class _DayScheduleState extends State<DaySchedule> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 15),
                   child: Text(
-                    "Добавить временной промежуток",
+                    'Добавить временной промежуток',
                     style: TextStyle(
-                        fontFamily: "Ubuntu",
+                        fontFamily: 'Ubuntu',
                         fontSize: 17,
                         color: Color(0xFF5775FF)),
                   ),
@@ -227,7 +229,7 @@ class _DayScheduleState extends State<DaySchedule> {
                 child: Text(
                   interval.start.toFormatString,
                   style: TextStyle(
-                    fontFamily: "Ubuntu",
+                    fontFamily: 'Ubuntu',
                     fontSize: 17,
                   ),
                 ),
@@ -264,7 +266,7 @@ class _DayScheduleState extends State<DaySchedule> {
                 child: Text(
                   interval.end.toFormatString,
                   style: TextStyle(
-                    fontFamily: "Ubuntu",
+                    fontFamily: 'Ubuntu',
                     fontSize: 17,
                   ),
                 ),

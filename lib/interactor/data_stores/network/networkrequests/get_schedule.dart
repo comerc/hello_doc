@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart' as dio;
-import 'package:flutter/material.dart';
 import 'networkrequest.dart';
 import '../../../entities/index.dart' as entities;
 import '../../../../utilities/bit_array.dart';
@@ -7,13 +6,13 @@ import '../../../../utilities/bit_array.dart';
 class GetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
   final entities.UserId userId;
   static const Map<String, int> _weekdayMap = {
-    "monday": 1,
-    "tuesday": 2,
-    "wednesday": 3,
-    "thursday": 4,
-    "friday": 5,
-    "saturday": 6,
-    "sunday": 7
+    'monday': 1,
+    'tuesday': 2,
+    'wednesday': 3,
+    'thursday': 4,
+    'friday': 5,
+    'saturday': 6,
+    'sunday': 7
   };
 
   GetSchedule(this.userId);
@@ -32,15 +31,17 @@ class GetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
 
   @override
   List<entities.DayTimeInterval> onAnswer(dio.Response answer) {
-    List<entities.DayTimeInterval> res = [];
-    if (data == null) return res;
-    Map intervalsMap = answer.data;
+    final result = <entities.DayTimeInterval>[];
+    // TODO: из get data всегда приходит data != null
+    if (data == null) return result;
+    // TODO: вместо "as" добавить генерик для (dio.Response<T> answer)
+    final intervalsMap = answer.data as Map<String, dynamic>;
 
-    for (String key in intervalsMap.keys) {
+    for (final key in intervalsMap.keys) {
       if (!_weekdayMap.keys.contains(key)) continue;
-      BitArray interval = BitArray(value: intervalsMap[key]);
+      final interval = BitArray(value: intervalsMap[key] as int);
       int startInterval;
-      for (int i = 0; i < 48; i++) {
+      for (var i = 0; i < 48; i++) {
         if (interval[i] && startInterval == null) {
           startInterval = i;
         }
@@ -52,11 +53,11 @@ class GetSchedule extends NetworkRequest<List<entities.DayTimeInterval>> {
           var newInterval = entities.DayTimeInterval(
               _weekdayMap[key], startDuration, endDuration);
           startInterval = null;
-          res.add(newInterval);
+          result.add(newInterval);
         }
       }
     }
-    return res;
+    return result;
   }
 
   @override

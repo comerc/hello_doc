@@ -1,16 +1,14 @@
-import "dart:async";
-
+import 'dart:async';
 import 'accessor.dart';
 import 'entities/index.dart' as pack_entities;
 import 'data_stores/network/index.dart' as pack_data_stores;
 import 'actions/action_base.dart';
 import 'notifications/notification_base.dart';
-import '../application_settings.dart';
 
 class AccessorDummy implements IAccessor {
   Map<String, Completer<ActionBase>> actions = {};
-  Map<NotificationBase, Function> _notifications = {};
-  StreamController<pack_entities.EntityBase> _controller =
+  final Map<NotificationBase, Function> _notifications = {};
+  final StreamController<pack_entities.EntityBase> _controller =
       StreamController<pack_entities.EntityBase>.broadcast();
   pack_data_stores.INetwork _dataStoreNetwork;
 
@@ -23,12 +21,14 @@ class AccessorDummy implements IAccessor {
     });
   }
 
+  @override
   Future initialize() async {}
 
+  // ignore: missing_return
   Future<ActionBase> runAction(ActionBase action) async {}
 
-  void addNotification(
-      NotificationBase notification, void onNotify(NotificationBase result)) {
+  void addNotification(NotificationBase notification,
+      void Function(NotificationBase result) onNotify) {
     _notifications[notification] = onNotify;
     _testNotificationOnActiveModels(notification);
   }

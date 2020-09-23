@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hello_doc/utilities/logging.dart';
 import 'presenter_base.dart';
 import '../views/view_base.dart';
 
 class PresenterProvider<T extends PresenterBase> extends StatefulWidget {
-  final presenter;
+  final T presenter;
   final ViewBase child;
 
   PresenterProvider({
@@ -16,16 +17,18 @@ class PresenterProvider<T extends PresenterBase> extends StatefulWidget {
   _ProviderState<T> createState() => _ProviderState<T>();
 
   static T of<T extends PresenterBase>(BuildContext context) {
-    PresenterProvider<T> provider =
+    final provider =
         context.findAncestorWidgetOfExactType<PresenterProvider<T>>();
     return provider?.presenter;
   }
 
   static bool hasPresenter<T extends PresenterBase>(BuildContext context) {
-    bool hasPresenter = false;
+    var hasPresenter = false;
     try {
       hasPresenter = PresenterProvider.of<T>(context) != null;
-    } catch (e) {}
+    } catch (error) {
+      Logger.logError(error);
+    }
     return hasPresenter;
   }
 }

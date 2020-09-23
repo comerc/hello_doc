@@ -12,7 +12,7 @@ class GetFreeInterval extends ActionBase {
 
   bool isReallyFreeInterval(pack_entities.ISchedule entitieSchedule) {
     if (freeDayTimeInterval == null) return false;
-    var items = entitieSchedule.itemsbyWeekday(weekday);
+    var items = entitieSchedule.itemsByWeekday(weekday);
     for (var interval in items) {
       if (interval.isIntersectionWith(freeDayTimeInterval)) return false;
     }
@@ -20,31 +20,35 @@ class GetFreeInterval extends ActionBase {
   }
 
   @override
-  void doAction(IAccessor accessor, void onComplete(ActionBase result)) async {
+  void doAction(
+    IAccessor accessor,
+    void Function(ActionBase result) onComplete,
+  ) async {
     var entitieSchedule = accessor.entitieSchedule;
     try {
-      var items = entitieSchedule.itemsbyWeekday(weekday);
+      var items = entitieSchedule.itemsByWeekday(weekday);
       if (items.isEmpty) {
         freeDayTimeInterval = pack_entities.DayTimeInterval(
             weekday, Duration(hours: 8), Duration(hours: 20));
         onComplete(this);
         return;
       } else {
-        Duration start = Duration.zero;
-        Duration end = Duration.zero;
-        List<pack_entities.DayTimeInterval> intervals =
-            List<pack_entities.DayTimeInterval>.from(items);
+        var start = Duration.zero;
+        var end = Duration.zero;
+        final intervals = List<pack_entities.DayTimeInterval>.from(items);
         intervals.sort((a, b) => a.startTime.compareTo(b.startTime));
 
-        for (int i = 0; i <= intervals.length; i++) {
-          if (i > 0)
+        for (var i = 0; i <= intervals.length; i++) {
+          if (i > 0) {
             start = intervals[i - 1].endTime + Duration(minutes: 30);
-          else
+          } else {
             start = Duration.zero;
-          if (i < intervals.length)
+          }
+          if (i < intervals.length) {
             end = intervals[i].startTime - Duration(minutes: 30);
-          else
+          } else {
             end = Duration(minutes: 1440);
+          }
           if ((end - start) >= Duration(minutes: 30)) {
             freeDayTimeInterval =
                 pack_entities.DayTimeInterval(weekday, start, end);
@@ -62,12 +66,14 @@ class GetFreeInterval extends ActionBase {
       if (e is pack_entities.ScheduleException) {
         error = Error(e.type.toString(), detail: e.description);
       } else {
-        error = Error("unknown");
+        error = Error('unknown');
       }
     }
     if (freeDayTimeInterval == null) {
-      error = Error("no_free_intervals",
-          detail: "Все временные интервалы уже заняты");
+      error = Error(
+        'no_free_intervals',
+        detail: 'Все временные интервалы уже заняты',
+      );
     }
     onComplete(this);
     return;

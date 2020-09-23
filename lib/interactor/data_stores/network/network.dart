@@ -9,7 +9,10 @@ import '../../../application_settings.dart';
 
 enum NetworkStatus { online, synchronization }
 
-getActionError(DioError error) {
+// fixed ambiguous_extension_member_access
+// extension NetworkError on DioError {
+//    Error get actionError {
+Error getActionError(DioError error) {
   switch (error.type) {
     case DioErrorType.CANCEL:
       return Error('network_cancel');
@@ -36,7 +39,7 @@ getActionError(DioError error) {
 
 abstract class INetwork {
   void init();
-  Future<R> sendRequest<R>(NetworkRequest request);
+  Future<R> sendRequest<R>(NetworkRequest<R> request);
 
   String get authToken;
   String get server;
@@ -45,9 +48,9 @@ abstract class INetwork {
 class RestNetwork extends INetwork {
   Dio _dio;
   @override
-  String get server => "https://dev.hellodoc.app";
+  String get server => 'https://dev.hellodoc.app';
   @override
-  String get authToken => "4d66a87c86122c45ad96990b646a795b35110be6";
+  String get authToken => '4d66a87c86122c45ad96990b646a795b35110be6';
 
   RestNetwork() : super();
   @override
@@ -66,41 +69,41 @@ class RestNetwork extends INetwork {
   void subscribeToDebugPrint(Dio dio) {
     dio.interceptors
         .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
-      Logger.logNetworkIO("requestHeaders: " + jsonEncode(options.headers));
-      if (options.contentType.contains("application/json")) {
-        Logger.logNetworkIO("requestData: " + jsonEncode(options.data));
+      Logger.logNetworkIO('requestHeaders: ' + jsonEncode(options.headers));
+      if (options.contentType.contains('application/json')) {
+        Logger.logNetworkIO('requestData: ' + jsonEncode(options.data));
       }
-      Logger.logNetworkIO("requestExtra: " + jsonEncode(options.extra));
-      Logger.logNetwork("requestPath: " + jsonEncode(options.path));
-      Logger.logNetworkIO("ContentType: " + options.contentType.toString());
+      Logger.logNetworkIO('requestExtra: ' + jsonEncode(options.extra));
+      Logger.logNetwork('requestPath: ' + jsonEncode(options.path));
+      Logger.logNetworkIO('ContentType: ' + options.contentType.toString());
       Logger.logNetworkIO(
-          "requestQuery: " + jsonEncode(options.queryParameters));
-      Logger.logNetworkIO("requestUrl: " + jsonEncode(options.baseUrl));
+          'requestQuery: ' + jsonEncode(options.queryParameters));
+      Logger.logNetworkIO('requestUrl: ' + jsonEncode(options.baseUrl));
 
       return options;
     }, onResponse: (Response<dynamic> response) {
-      JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      final encoder = JsonEncoder.withIndent('  ');
       if (response.request.responseType == ResponseType.json) {
-        Logger.logNetworkIO("responseBody: " + encoder.convert(response.data));
+        Logger.logNetworkIO('responseBody: ' + encoder.convert(response.data));
       } else {
-        Logger.logNetworkIO("responseBody: " + response.toString());
+        Logger.logNetworkIO('responseBody: ' + response.toString());
       }
-      Logger.logNetworkIO("responseHeader: " + response.headers.toString());
+      Logger.logNetworkIO('responseHeader: ' + response.headers.toString());
       Logger.logNetworkIO(
-          "responseStatusCode: " + jsonEncode(response.statusCode));
+          'responseStatusCode: ' + jsonEncode(response.statusCode));
       return response;
     }, onError: (DioError e) {
-      Logger.logError("errorMessage: " + e.message);
+      Logger.logError('errorMessage: ' + e.message);
       if (e.response != null) {
-        JsonEncoder encoder = JsonEncoder.withIndent('  ');
+        final encoder = JsonEncoder.withIndent('  ');
         if (e.response.request.responseType == ResponseType.json) {
-          Logger.logError("responseBody: " + encoder.convert(e.response.data));
+          Logger.logError('responseBody: ' + encoder.convert(e.response.data));
         } else {
-          Logger.logError("responseBody: " + e.response.toString());
+          Logger.logError('responseBody: ' + e.response.toString());
         }
-        Logger.logError("responseHeader: " + e.response.headers.toString());
+        Logger.logError('responseHeader: ' + e.response.headers.toString());
         Logger.logError(
-            "responseStatusCode: " + jsonEncode(e.response.statusCode));
+            'responseStatusCode: ' + jsonEncode(e.response.statusCode));
       }
       return e;
     }));
@@ -108,7 +111,7 @@ class RestNetwork extends INetwork {
 
   // int counter = 0;
   @override
-  Future<R> sendRequest<R>(NetworkRequest request) async {
+  Future<R> sendRequest<R>(NetworkRequest<R> request) async {
     var currentDio = _dio;
     if (request.baseUrl != null) {
       var options = BaseOptions(
@@ -124,9 +127,9 @@ class RestNetwork extends INetwork {
       }
     }
     Response response;
-    Options options = request.options ?? Options();
+    final options = request.options ?? Options();
     if (request.authorized) {
-      options.headers["Authorization"] = "Bearer $authToken";
+      options.headers['Authorization'] = 'Bearer $authToken';
     }
     try {
       switch (request.typeRequest) {
@@ -166,7 +169,7 @@ class RestNetwork extends INetwork {
       if ((error is DioError)) {
         throw getActionError(error);
       } else {
-        throw Error("network_unknown");
+        throw Error('network_unknown');
       }
     }
     return request.onAnswer(response);

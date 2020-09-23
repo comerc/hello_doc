@@ -9,7 +9,7 @@ import '../interactor/notifications/index.dart' as notifications;
 class Schedule extends ViewBase {
   @override
   Widget build(BuildContext context) {
-    final presenters.Schedule presenter =
+    final presenter =
         presenters.PresenterProvider.of<presenters.Schedule>(context);
     return MaterialApp(
       navigatorKey: presenter.mainNavigationKey,
@@ -17,6 +17,7 @@ class Schedule extends ViewBase {
         brightness: Brightness.light,
       ),
       home: Scaffold(
+        // TODO: исправить Scaffold.appBar (SafeArea, preferredSize)
         appBar: PreferredSize(
             child: SafeArea(child: Container()), preferredSize: Size(0, 30)),
         backgroundColor: Color(0xFFF2F5F8),
@@ -36,35 +37,38 @@ class Schedule extends ViewBase {
                             child: IgnorePointer(
                               ignoring: busy,
                               child: RaisedButton(
-                                  color: Color(0xFF5775FF),
-                                  // shape: ShapeBorder(),
-                                  onPressed: () async {
-                                    var error = await presenter.save();
-                                    if (error != null) {
-                                      _showInfo(
-                                          context, error.title, error.detail);
-                                    }
-                                  },
-                                  child: busy
-                                      ? SizedBox(
-                                          height: 24,
-                                          width: 24,
-                                          child: Center(
-                                            child: CircularProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                        Color>(
+                                color: Color(0xFF5775FF),
+                                // shape: ShapeBorder(),
+                                onPressed: () async {
+                                  var error = await presenter.save();
+                                  if (error != null) {
+                                    // ignore: unawaited_futures
+                                    _showInfo(
+                                        context, error.title, error.detail);
+                                  }
+                                },
+                                child: busy
+                                    ? SizedBox(
+                                        height: 24,
+                                        width: 24,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
                                               Colors.white,
-                                            )),
+                                            ),
                                           ),
-                                        )
-                                      : Text(
-                                          "Готово",
-                                          style: TextStyle(
-                                              fontFamily: "Ubuntu",
-                                              fontSize: 15,
-                                              color: Colors.white),
-                                        )),
+                                        ),
+                                      )
+                                    : Text(
+                                        'Готово',
+                                        style: TextStyle(
+                                          fontFamily: 'Ubuntu',
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                              ),
                             ),
                           );
                         });
@@ -84,7 +88,7 @@ class Schedule extends ViewBase {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text("Не удалось загрузить расписание"),
+                          child: Text('Не удалось загрузить расписание'),
                         ),
                         ValueListenableBuilder<bool>(
                             valueListenable: presenter.busy,
@@ -94,39 +98,41 @@ class Schedule extends ViewBase {
                                 child: IgnorePointer(
                                   ignoring: busy,
                                   child: RaisedButton(
-                                      color: Color(0xFF5775FF),
-                                      // shape: ShapeBorder(),
-                                      onPressed: () async {
-                                        await presenter.reload();
-                                      },
-                                      child: busy
-                                          ? SizedBox(
-                                              height: 24,
-                                              width: 24,
-                                              child: Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                        valueColor:
-                                                            AlwaysStoppedAnimation<
-                                                                Color>(
+                                    color: Color(0xFF5775FF),
+                                    // shape: ShapeBorder(),
+                                    onPressed: () async {
+                                      await presenter.reload();
+                                    },
+                                    child: busy
+                                        ? SizedBox(
+                                            height: 24,
+                                            width: 24,
+                                            child: Center(
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(
                                                   Colors.white,
-                                                )),
+                                                ),
                                               ),
-                                            )
-                                          : Text(
-                                              "Загрузить снова",
-                                              style: TextStyle(
-                                                  fontFamily: "Ubuntu",
-                                                  fontSize: 15,
-                                                  color: Colors.white),
-                                            )),
+                                            ),
+                                          )
+                                        : Text(
+                                            'Загрузить снова',
+                                            style: TextStyle(
+                                              fontFamily: 'Ubuntu',
+                                              fontSize: 15,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                  ),
                                 ),
                               );
                             })
                       ],
                     ),
                   );
-                } else
+                } else {
                   return ValueListenableBuilder(
                     valueListenable: presenter.loading,
                     builder: (context, bool loading, _) {
@@ -161,6 +167,7 @@ class Schedule extends ViewBase {
                             );
                     },
                   );
+                }
               }),
         ),
       ),
@@ -174,20 +181,22 @@ class Schedule extends ViewBase {
     var res = List<Widget>.from(
       snapshot.data.map<Widget>((dayItem) {
         return components.DaySchedule(
-          key: Key("DaySchedule_${dayItem.name}"),
+          key: Key('DaySchedule_${dayItem.name}'),
           name: dayItem.name,
           intervals: dayItem.intervals,
           active: dayItem.active,
           weekday: dayItem.number,
           onActiveChanged: (value, weekday) {
-            if (value)
+            if (value) {
               presenter.activateDay(weekday);
-            else
+            } else {
               presenter.deactivateDay(weekday);
+            }
           },
           onIntervalAdded: (weekday) async {
             var error = await presenter.addScheduleInterval(weekday);
             if (error != null) {
+              // ignore: unawaited_futures
               _showInfo(context, error.title, error.detail);
             }
           },
@@ -210,11 +219,11 @@ class Schedule extends ViewBase {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(header ?? "Ошибка"),
+          title: Text(header ?? 'Ошибка'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(content ?? "Что-то пошло не так..."),
+                Text(content ?? 'Что-то пошло не так...'),
               ],
             ),
           ),

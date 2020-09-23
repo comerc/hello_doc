@@ -5,12 +5,13 @@ class BitArray {
         assert(value != null);
 
   bool operator [](int index) {
-    if (index >= 64) throw Exception("Wrong index...");
-    int res = _value & 1 << index;
-    if (res == 0)
+    if (index >= 64) throw Exception('Wrong index...');
+    final res = _value & 1 << index;
+    if (res == 0) {
       return false;
-    else
+    } else {
       return true;
+    }
   }
 
   void operator []=(int index, bool value) {
@@ -22,12 +23,12 @@ class BitArray {
   }
 
   void setBit(int index) {
-    if (index >= 64) throw Exception("Wrong index...");
+    if (index >= 64) throw Exception('Wrong index...');
     _value = _value | 1 << index;
   }
 
   void clearBit(int index) {
-    if (index >= 64) throw Exception("Wrong index...");
+    if (index >= 64) throw Exception('Wrong index...');
     _value = _value & ~(1 << index);
   }
 

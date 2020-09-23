@@ -1,3 +1,4 @@
+import 'package:hello_doc/utilities/logging.dart';
 import 'action_base.dart';
 import '../accessor.dart';
 import '../entities/index.dart' as pack_entities;
@@ -8,7 +9,10 @@ class LoadSchedule extends ActionBase {
 
   LoadSchedule(this.userId);
   @override
-  void doAction(IAccessor accessor, void onComplete(ActionBase result)) async {
+  void doAction(
+    IAccessor accessor,
+    void Function(ActionBase result) onComplete,
+  ) async {
     var dataStoreNetwork = accessor.dataStoreNetwork;
     var entitieSchedule = accessor.entitieSchedule;
     try {
@@ -20,8 +24,10 @@ class LoadSchedule extends ActionBase {
       if (e is Error) {
         error = e;
       } else {
-        error = Error("unknown");
+        error = Error('unknown');
       }
+      // TODO: почему ошибка не попадает в Logger? (много подобного в наследниках ActionBase)
+      Logger.logError(error);
     }
     onComplete(this);
     return;

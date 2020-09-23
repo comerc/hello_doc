@@ -6,7 +6,10 @@ class AddSchedulenterval extends ActionBase {
   pack_entities.DayTimeInterval interval;
   AddSchedulenterval(this.interval) : assert(interval != null);
   @override
-  void doAction(IAccessor accessor, void onComplete(ActionBase result)) async {
+  void doAction(
+    IAccessor accessor,
+    void Function(ActionBase result) onComplete,
+  ) async {
     var entitieSchedule = accessor.entitieSchedule;
     try {
       entitieSchedule.addItem(interval);
@@ -14,7 +17,7 @@ class AddSchedulenterval extends ActionBase {
       if (e is pack_entities.ScheduleException) {
         error = Error(e.type.toString(), detail: e.description);
       } else {
-        error = Error("unknown");
+        error = Error('unknown');
       }
     }
     onComplete(this);

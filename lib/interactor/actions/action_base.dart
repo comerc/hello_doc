@@ -1,5 +1,4 @@
 import 'package:uuid/uuid.dart';
-import '../entities/index.dart' as pack_entities;
 import '../accessor.dart';
 
 class Error {
@@ -27,7 +26,10 @@ abstract class ActionBase {
 
   ActionBase({String id}) : _id = id ?? Uuid().v4();
 
-  void doAction(IAccessor accessor, void onComplete(ActionBase result));
+  void doAction(
+    IAccessor accessor,
+    void Function(ActionBase result) onComplete,
+  );
   String get id => _id;
 }
 
